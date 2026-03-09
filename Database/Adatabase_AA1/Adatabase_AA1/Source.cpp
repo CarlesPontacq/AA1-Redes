@@ -52,6 +52,21 @@ void GetAllUsers(sql::Connection* con) {
     }
 }
 
+void UpdatePassword(sql::Connection* con, std::string user, std::string newPassword) {
+    try {
+        sql::Statement* stmt = con->createStatement();
+        std::string query = "UPDATE users SET password = '" + newPassword + "' WHERE username = '" + user + "'";
+
+        int affected_rows = stmt->executeUpdate(query);
+        std::cout << "Number of rows affected: " << affected_rows << std::endl;
+
+        delete stmt;
+    }
+    catch (sql::SQLException& e) {
+        std::cout << "Error while updating password: " << e.what() << std::endl;
+    }
+}
+
 void main()
 {
     sql::Driver* driver;
@@ -61,7 +76,7 @@ void main()
 
     con->setSchema(DATABASE);
     GetAllUsers(con);
-
+    UpdatePassword(con, "Radev", "salvarAlumnos");
     DisconnectDatabase(con);
 
     system("pause");

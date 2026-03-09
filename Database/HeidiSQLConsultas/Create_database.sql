@@ -4,10 +4,10 @@ USE Videogame;
 -- CREATE TABLE users(
 	-- id INT AUTO_INCREMENT PRIMARY KEY,
 	-- username VARCHAR(50),
-	-- PASSWORD VARCHAR(255)
+	-- password VARCHAR(255)
 -- );
 
-INSERT INTO users (username, PASSWORD) VALUES
+INSERT INTO users (username, password) VALUES
 ('Richard', 'suspenderAlumnos'),
 ('Radev', 'salvarAlumnos'),
 ('Edu', 'pas123');
