@@ -54,8 +54,26 @@ void GetAllUsers(sql::Connection* con) {
 
 void UpdatePassword(sql::Connection* con, std::string user, std::string newPassword) {
     try {
+        std::string query = "UPDATE users SET password = ? WHERE username = ?";
+        sql::PreparedStatement* stmt = con->prepareStatement(query);
+
+        stmt->setString(1, newPassword);
+        stmt->setString(2, user);
+
+        int affected_rows = stmt->executeUpdate();
+        std::cout << "Number of rows affected: " << affected_rows << std::endl;
+
+        delete stmt;
+    }
+    catch (sql::SQLException& e) {
+        std::cout << "Error while deleteing user: " << e.what() << std::endl;
+    }
+}
+
+void DeleteByUser(sql::Connection* con, std::string user) {
+    try {
         sql::Statement* stmt = con->createStatement();
-        std::string query = "UPDATE users SET password = '" + newPassword + "' WHERE username = '" + user + "'";
+        std::string query = "DELETE FROM users WHERE username = '" + user + "'";
 
         int affected_rows = stmt->executeUpdate(query);
         std::cout << "Number of rows affected: " << affected_rows << std::endl;
@@ -67,6 +85,22 @@ void UpdatePassword(sql::Connection* con, std::string user, std::string newPassw
     }
 }
 
+void CreateUsers(sql::Connection* con, std::string user, std::string password) {
+    try {
+        sql::Statement* stmt = con->createStatement();
+        std::string query = "INSERT INTO users (username, password) VALUES ('" + user + "', '" + password + "')";
+
+        int affected_rows = stmt->executeUpdate(query);
+        if(affected_rows > 0)
+            std::cout << "User created succesfully" << std::endl;
+
+        delete stmt;
+    }
+    catch (sql::SQLException& e) {
+        std::cout << "Error while creating user: " << e.what() << std::endl;
+    }
+}
+
 void main()
 {
     sql::Driver* driver;
@@ -75,8 +109,10 @@ void main()
     ConnectDatabase(driver, con);
 
     con->setSchema(DATABASE);
-    GetAllUsers(con);
-    UpdatePassword(con, "Radev", "salvarAlumnos");
+    //GetAllUsers(con);
+    //UpdatePassword(con, "Radev", "salvarAlumnos");
+    //DeleteByUser(con, "Radev");
+    //CreateUsers(con, "Radev", "salvarAlumnos");
     DisconnectDatabase(con);
 
     system("pause");
