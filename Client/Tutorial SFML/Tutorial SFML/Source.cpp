@@ -19,14 +19,16 @@ void Handshake(sf::Packet data) {
 	std::string receiveMessage;
 	data >> receiveMessage;
 
-	std::cout << "Mensaje Handshake enviado del servidor: " << receiveMessage << std::endl;
+	std::cout << "Mensaje enviado del servidor: " << receiveMessage << std::endl;
 }
 
 void Login(sf::Packet data) {
-	std::string receiveMessage;
-	data >> receiveMessage;
+	std::string user;
+	std::string pass;
+	data >> user;
+	data >> pass;
 
-	std::cout << "Mensaje Login enviado del servidor: " << receiveMessage << std::endl;
+	std::cout << "El usuario es: " << user << " con la password: " << pass << std::endl;
 }
 
 
@@ -39,29 +41,35 @@ void main()
 	}
 	else {
 		std::cout << "Conectado al servidor" << std::endl;
-
+		socket.setBlocking(false);
 		sf::Packet packet;
 
+		bool gameOver = false;
 
-		if (socket.receive(packet) == sf::Socket::Status::Done) {
-			tipoPaquete tipo;
-			packet >> tipo;
+		while (!gameOver) {
+			if (socket.receive(packet) == sf::Socket::Status::Done) {
+				tipoPaquete tipo;
+				packet >> tipo;
 
-			switch (tipo) {
-			case HANDSHAKE:
-				Handshake(packet);
-				break;
-			case LOGIN:
-				Login(packet);
-				break;
-			case MOVIMIENTO:
-				break;
+				switch (tipo) {
+				case HANDSHAKE:
+					Handshake(packet);
+					break;
+				case LOGIN:
+					Login(packet);
+					break;
+				case MOVIMIENTO:
+					break;
+				}
+
+				packet.clear();
 			}
+			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
+				gameOver = true;
+			}
+		}
 
-			packet.clear();
-		}
-		else {
-			std::cerr << "Error al recibir el mensaje del servidor" << std::endl;
-		}
+		std::cout << "Desconectado" << std::endl;
+
 	}
 }
