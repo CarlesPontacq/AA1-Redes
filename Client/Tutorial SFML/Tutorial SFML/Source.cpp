@@ -67,6 +67,25 @@ void main()
 			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
 				gameOver = true;
 			}
+
+			std::string message;
+			std::cout << "Inserta mensaje para el servidor, -1 para salir" << std::endl;
+			std::cin >> message;
+
+			if (message == "-1") {
+				std::cout << "Desconectado..." << std::endl;
+				gameOver = true;
+			}
+			else {
+				sf::Packet packet;
+				packet << message;
+				if (socket.send(packet) != sf::Socket::Status::Done) {
+					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
+				}
+				else {
+					std::cout << "Mensaje enviado: " << message << std::endl;
+				}
+			}
 		}
 
 		std::cout << "Desconectado" << std::endl;
