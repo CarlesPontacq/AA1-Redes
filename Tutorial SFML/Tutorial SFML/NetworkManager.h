@@ -15,21 +15,23 @@ public:
 		return &nt;
 	}
 
-	bool closeServer = false;
-
+	void Init();
+	void EstablishConnectionWithClient();
+	void ReceiveAllClientPacket();
+	void CheckForDisconnection();
+	
+	inline void CloseServer() { closeServer = true; }
+	inline bool GetCloseServer() { return closeServer; }
+	inline bool CheckIfSocketsAreReadyToReceive() { return selector.wait(); }
+private:
+	bool closeServer;
 	sf::TcpListener listener;
 	sf::SocketSelector selector;
 
 	std::vector <sf::TcpSocket*> clients;
 	sf::TcpSocket* newClient;
 
-	void Init();
-	void ReceiveClient();
-
-private:
-	NetworkManager();
-
-
+	NetworkManager() = default;
 	NetworkManager(const NetworkManager& nt) = delete;
 	NetworkManager& operator=(const NetworkManager& nt) = delete;
 	~NetworkManager() = default;
