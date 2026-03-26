@@ -31,7 +31,7 @@ void NetworkManager::EstablishConnectionWithClient()
     }
 }
 
-void NetworkManager::ReceiveAllClientPacket()
+void NetworkManager::ReceiveClientPacket()
 {
     if (!selector.isReady(listener)) {
         for (int i = 0; i < clients.size(); i++) {

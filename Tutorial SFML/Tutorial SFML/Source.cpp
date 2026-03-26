@@ -22,7 +22,7 @@ void main()
     while (!NT->GetCloseServer()) {
         if (NT->CheckIfSocketsAreReadyToReceive()) {
             NT->EstablishConnectionWithClient();
-            NT->ReceiveAllClientPacket();
+            NT->ReceiveClientPacket();
             NT->CheckForDisconnection();
 
         }
