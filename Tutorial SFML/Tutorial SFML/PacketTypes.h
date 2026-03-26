@@ -1,0 +1,5 @@
+#pragma once
+enum class PacketTypes
+{
+	HANDSHAKE, LOGIN, REGISTER, LOOBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+};
