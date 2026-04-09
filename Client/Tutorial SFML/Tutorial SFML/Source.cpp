@@ -5,12 +5,15 @@
 #define SERVER_PORT 55000
 const sf::IpAddress SERVER_IP = sf::IpAddress(127, 0, 0, 1);
 
-enum tipoPaquete { HANDSHAKE, LOGIN, MOVIMIENTO };
+enum PacketTypes
+{
+	HANDSHAKE, LOGIN, REGISTER, LOOBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+};
 
-sf::Packet& operator>>(sf::Packet& packet, tipoPaquete& tipo) {
+sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
 	packet >> temp;
-	tipo = static_cast<tipoPaquete>(temp);
+	tipo = static_cast<PacketTypes>(temp);
 
 	return packet;
 }
@@ -42,29 +45,30 @@ void main()
 	else {
 		std::cout << "Conectado al servidor" << std::endl;
 		socket.setBlocking(false);
-		sf::Packet packet;
-
 		bool gameOver = false;
 
 		while (!gameOver) {
-			if (socket.receive(packet) == sf::Socket::Status::Done) {
-				tipoPaquete tipo;
-				packet >> tipo;
+			sf::Packet receivePacket;
+
+			if (socket.receive(receivePacket) == sf::Socket::Status::Done) {
+				PacketTypes tipo;
+				receivePacket >> tipo;
 
 				switch (tipo) {
 				case HANDSHAKE:
-					Handshake(packet);
+					Handshake(receivePacket);
 					break;
 				case LOGIN:
-					Login(packet);
+					Login(receivePacket);
 					break;
-				case MOVIMIENTO:
+				default:
+					std::cout << "No detectado tipo de paquete" << std::endl;
 					break;
 				}
 
-				packet.clear();
+				receivePacket.clear();
 			}
-			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
+			if (socket.receive(receivePacket) == sf::Socket::Status::Disconnected) {
 				gameOver = true;
 			}
 
@@ -77,9 +81,9 @@ void main()
 				gameOver = true;
 			}
 			else {
-				sf::Packet packet;
-				packet << message;
-				if (socket.send(packet) != sf::Socket::Status::Done) {
+				sf::Packet sendPacket;
+				sendPacket << message;
+				if (socket.send(sendPacket) != sf::Socket::Status::Done) {
 					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
 				}
 				else {

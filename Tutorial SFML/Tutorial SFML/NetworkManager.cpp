@@ -19,9 +19,11 @@ void NetworkManager::EstablishConnectionWithClient()
 
         if (listener.accept(*newClient) == sf::Socket::Status::Done) {
             newClient->setBlocking(false);
-            selector.add(*newClient);
-
+            
             //Hacer Handshake
+
+            SPTM->SendHandshake(*newClient);
+            selector.add(*newClient);
 
             //Se crearia aqui el cliente con su clase Cliente
 

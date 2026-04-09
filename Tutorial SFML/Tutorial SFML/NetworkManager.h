@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Network.hpp>
 #include <iostream>
+#include "ServerPacketTypeManager.h"
+
 
 #define NT NetworkManager::Instance()
 #define LISTENER_PORT 55000
