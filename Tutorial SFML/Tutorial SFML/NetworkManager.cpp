@@ -20,8 +20,6 @@ void NetworkManager::EstablishConnectionWithClient()
         if (listener.accept(*newClient) == sf::Socket::Status::Done) {
             newClient->setBlocking(false);
             
-            //Hacer Handshake
-
             SPTM->SendHandshake(*newClient);
             selector.add(*newClient);
 
@@ -41,12 +39,7 @@ void NetworkManager::ReceiveClientPacket()
                 sf::Packet packet;
 
                 if (clients[i]->receive(packet) == sf::Socket::Status::Done) {
-                    //Comprobar que tipo de paquete es y manejarlo respecto a eso
-                    
-                    std::string message;
-                    packet >> message;
-
-                    std::cout << "Mensaje: " << message << std::endl;
+                    SPTM->ReceivePacket(packet);
                 }
             }
         }

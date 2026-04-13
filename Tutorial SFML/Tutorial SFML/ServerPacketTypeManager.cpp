@@ -29,18 +29,25 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 		ReceiveHandshakePacket(packet);
 		break;
 	case PacketTypes::LOGIN:
+		ReceiveLoginPacket(packet);
 		break;
 	case PacketTypes::REGISTER:
+		ReceiveRegisterPacket(packet);
 		break;
 	case PacketTypes::LOOBY_CREATE:
+		ReceiveLobbyCreatePacket(packet);
 		break;
 	case PacketTypes::LOBBY_JOIN:
+		ReceiveLobbyJoinPacket(packet);
 		break;
 	case PacketTypes::RANKING:
+		ReceiveRankingPacket(packet);
 		break;
 	case PacketTypes::START_GAME:
+		ReceiveStartGamePacket(packet);
 		break;
 	case PacketTypes::END_GAME:
+		ReceiveEndGamePacket(packet);
 		break;
 	default:
 		std::cout << "No se ha identificado el tipo de packete" << std::endl;
