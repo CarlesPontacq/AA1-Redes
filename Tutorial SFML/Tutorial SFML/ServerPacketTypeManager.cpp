@@ -84,3 +84,49 @@ void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 
 	std::cout << "Mensaje enviado del cliente: " << receiveMesage << std::endl;
 }
+
+void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data)
+{
+	std::string loginUsername;
+	std::string loginPassword;
+
+	data >> loginUsername;
+	data >> loginUsername;
+
+	//Desencripta
+
+	bool correctLogin = false;
+
+	//Funcion para comprobar si el login es correcto segun la base de datos (Que devuelva un booleano)
+
+	if (correctLogin) {
+		std::cout << "Login correcto de: " << loginUsername << ", pasando a la siguiente escena" << std::endl;
+		//Pasar a la siguiente escena
+	}
+	else {
+		std::cout << "Login incorrecto, la contraseya o el usuario están mal" << std::endl;
+	}
+}
+
+void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
+{
+	std::string registerUsername;
+	std::string registerPassword;
+
+	data >> registerUsername;
+	data >> registerPassword;
+
+	//Desencripta
+
+	bool correctRegister = false;
+
+	//Funcion para comprobar si el registro es correcto, y si lo es que lo ejecute (Que devuelva un booleano)
+
+	if (correctRegister) {
+		std::cout << "Registro completado exitosamente" << std::endl;
+		//Pasar a la siguiente escena
+	}
+	else {
+		std::cout << "Registro incorrecto, la contraseya o el usuario no cumplen los requisistos" << std::endl;
+	}
+}
