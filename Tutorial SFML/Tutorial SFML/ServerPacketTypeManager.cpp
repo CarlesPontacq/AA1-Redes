@@ -130,3 +130,43 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 		std::cout << "Registro incorrecto, la contraseya o el usuario no cumplen los requisistos" << std::endl;
 	}
 }
+
+void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
+{
+	std::string lobbyID;
+
+	data >> lobbyID;
+
+	bool lobbyIDIsAvailable = false;
+
+	//Funcion para comprobar si el ID esta disponible
+	 
+	if (lobbyIDIsAvailable) {
+		//Añadir el jugador en el lobby
+		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
+		//Pasar a la siguiente escena o espera
+	}
+	else {
+		std::cout << "El ID " << lobbyID << " no esta disponible ahora mismo, prueba uno diferente" << std::endl;
+	}
+}
+
+void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
+{
+	std::string lobbyID;
+
+	data >> lobbyID;
+
+	bool lobbyIsAvailable = false;
+
+	//Funcion para comprobar si la sala existe o si esta vacia
+
+	if (lobbyIsAvailable) {
+		//Añadir el jugador en el lobby
+		std::cout << "Te has unido al lobby exitosamente" << std::endl;
+		//Pasar a la siguiente escena o espera
+	}
+	else {
+		std::cout << "El lobby " << lobbyID << " esta lleno o no existe" << std::endl;
+	}
+}
