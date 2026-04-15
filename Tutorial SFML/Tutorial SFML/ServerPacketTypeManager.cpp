@@ -57,7 +57,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 	packet.clear();
 }
 
-void ServerPacketTypesManager::SedData(sf::TcpSocket& client, sf::Packet& packet)
+void ServerPacketTypesManager::SendData(sf::TcpSocket& client, sf::Packet& packet)
 {
 	if (client.send(packet) == sf::Socket::Status::Done) {
 		std::cout << "Mensaje enviado" << std::endl;
@@ -74,7 +74,7 @@ void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& client)
 
 	std::cout << handshakeMessage << std::endl;
 
-	SedData(client, packet);
+	SendData(client, packet);
 }
 
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
@@ -169,4 +169,16 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
 	else {
 		std::cout << "El lobby " << lobbyID << " esta lleno o no existe" << std::endl;
 	}
+}
+
+void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
+{
+}
+
+void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
+{
+}
+
+void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)
+{
 }

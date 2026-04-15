@@ -31,7 +31,7 @@ private:
 	ServerPacketTypesManager& operator=(const ServerPacketTypesManager& ptm) = delete;
 	~ServerPacketTypesManager() = default;
 
-	void SedData(sf::TcpSocket& client, sf::Packet& packet);
+	void SendData(sf::TcpSocket& client, sf::Packet& packet);
 
 	void ReceiveHandshakePacket(sf::Packet data);
 	void ReceiveLoginPacket(sf::Packet data);
