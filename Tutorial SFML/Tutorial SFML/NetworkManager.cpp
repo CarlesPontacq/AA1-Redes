@@ -39,7 +39,7 @@ void NetworkManager::ReceiveClientPacket()
                 sf::Packet packet;
 
                 if (clients[i]->receive(packet) == sf::Socket::Status::Done) {
-                    SPTM->ReceivePacket(packet);
+                    SPTM->ReceivePacket(packet, *clients[i]);
                 }
             }
         }

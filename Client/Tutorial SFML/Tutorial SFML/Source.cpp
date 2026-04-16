@@ -25,13 +25,40 @@ void Handshake(sf::Packet data) {
 	std::cout << "Mensaje enviado del servidor: " << receiveMessage << std::endl;
 }
 
-void Login(sf::Packet data) {
-	std::string user;
-	std::string pass;
-	data >> user;
-	data >> pass;
+void LoginResponse(sf::Packet data) {
+	bool success;
+	std::string username;
+	std::string message;
 
-	std::cout << "El usuario es: " << user << " con la password: " << pass << std::endl;
+	data >> success;
+	data >> username;
+	data >> message;
+
+	if (success) {
+		std::cout << "Login correcto! Bienvenido " << username << std::endl;
+		std::cout << "Mensaje del servidor: " << message << std::endl;
+	}
+	else {
+		std::cout << "Login incorrecto" << message << std::endl;
+	}
+}
+
+void RegisterResponse(sf::Packet data) {
+	bool success;
+	std::string username;
+	std::string message;
+
+	data >> success;
+	data >> username;
+	data >> message;
+
+	if (success) {
+		std::cout << "Registro correcto! Usuario " << username << " creado" << std::endl;
+		std::cout << "Mensaje del servidor: " << message << std::endl;
+	}
+	else {
+		std::cout << "Registro fallido " << message << std::endl;
+	}
 }
 
 
@@ -59,7 +86,10 @@ void main()
 					Handshake(receivePacket);
 					break;
 				case LOGIN:
-					Login(receivePacket);
+					LoginResponse(receivePacket);
+					break;
+				case REGISTER:
+					RegisterResponse(receivePacket);
 					break;
 				default:
 					std::cout << "No detectado tipo de paquete" << std::endl;
@@ -72,24 +102,62 @@ void main()
 				gameOver = true;
 			}
 
-			std::string message;
-			std::cout << "Inserta mensaje para el servidor, -1 para salir" << std::endl;
-			std::cin >> message;
+			std::cout << "\n=== MENU ===" << std::endl;
+			std::cout << "1. Login" << std::endl;
+			std::cout << "2. Register" << std::endl;
+			std::cout << "3. Salir" << std::endl;
+			std::cout << "Opcion: ";
 
-			if (message == "-1") {
-				std::cout << "Desconectado..." << std::endl;
-				gameOver = true;
-			}
-			else {
-				sf::Packet sendPacket;
-				sendPacket << message;
-				if (socket.send(sendPacket) != sf::Socket::Status::Done) {
-					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
+			int opcion;
+			std::cin >> opcion;
+
+			if (opcion == 1) {
+				// LOGIN
+				std::string username, password;
+				std::cout << "Usuario: ";
+				std::cin >> username;
+				std::cout << "Contrasenya: ";
+				std::cin >> password;
+
+				sf::Packet packet;
+				packet << PacketTypes::LOGIN;
+				packet << username;
+				packet << password;
+
+				if (socket.send(packet) == sf::Socket::Status::Done) {
+					std::cout << "Enviando solicitud de login..." << std::endl;
 				}
 				else {
-					std::cout << "Mensaje enviado: " << message << std::endl;
+					std::cerr << "Error al enviar login" << std::endl;
 				}
 			}
+			else if (opcion == 2) {
+				// REGISTER
+				std::string username, password;
+				std::cout << "Nuevo usuario: ";
+				std::cin >> username;
+				std::cout << "Contrasenya : ";
+				std::cin >> password;
+
+				sf::Packet packet;
+				packet << PacketTypes::REGISTER;
+				packet << username;
+				packet << password;
+
+				if (socket.send(packet) == sf::Socket::Status::Done) {
+					std::cout << "Enviando solicitud de registro..." << std::endl;
+				}
+				else {
+					std::cerr << "Error al enviar registro" << std::endl;
+				}
+			}
+			else if (opcion == 3) {
+				std::cout << "Desconectando..." << std::endl;
+				gameOver = true;
+			}
+
+			// Pequeña pausa para recibir respuesta
+			sf::sleep(sf::milliseconds(100));
 		}
 
 		std::cout << "Desconectado" << std::endl;
