@@ -1,8 +1,8 @@
 #pragma once
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include "RigidBody.h"
 #include "Transform.h"
-#include "ImageRenderer.h"
-#include "AnimatedImageRenderer.h"
 #include "TimeManager.h"
 
 class Object
@@ -12,7 +12,7 @@ private:
 
 
 protected:
-	Renderer* renderer = nullptr;
+	sf::Sprite* sprite;
 	Transform* transform;
 	Rigidbody* physics;
 
@@ -27,12 +27,12 @@ public:
 	{
 		delete transform;
 		delete physics;
-		delete renderer;
+		delete sprite;
 	}
 
-	virtual void Render()
+	virtual void Render(sf::RenderTarget& window)
 	{
-		renderer->Render();
+		window.draw(*sprite);
 	}
 
 	virtual void Update()
@@ -40,7 +40,8 @@ public:
 		if (physics != nullptr)
 			physics->Update();
 
-		renderer->Update();
+		// Poner la lógica de actualizar la posición/tamaño/orientación del sprite respecto al transform
+		//sprite->Update();
 	}
 
 	inline Transform* const GetTransform() { return transform; }
