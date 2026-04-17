@@ -18,5 +18,31 @@
     <ClCompile Include="Source.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\main.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\config.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
