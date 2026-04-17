@@ -32,63 +32,63 @@ void Login(sf::Packet data) {
 }
 
 
-void main()
-{
-	sf::TcpSocket socket;
-
-	if (socket.connect(SERVER_IP, SERVER_PORT) != sf::Socket::Status::Done) {
-		std::cerr << "Error al conectar con el servidor" << std::endl;
-	}
-	else {
-		std::cout << "Conectado al servidor" << std::endl;
-		socket.setBlocking(false);
-		sf::Packet packet;
-
-		bool gameOver = false;
-
-		while (!gameOver) {
-			if (socket.receive(packet) == sf::Socket::Status::Done) {
-				tipoPaquete tipo;
-				packet >> tipo;
-
-				switch (tipo) {
-				case HANDSHAKE:
-					Handshake(packet);
-					break;
-				case LOGIN:
-					Login(packet);
-					break;
-				case MOVIMIENTO:
-					break;
-				}
-
-				packet.clear();
-			}
-			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
-				gameOver = true;
-			}
-
-			std::string message;
-			std::cout << "Inserta mensaje para el servidor, -1 para salir" << std::endl;
-			std::cin >> message;
-
-			if (message == "-1") {
-				std::cout << "Desconectado..." << std::endl;
-				gameOver = true;
-			}
-			else {
-				sf::Packet packet;
-				packet << message;
-				if (socket.send(packet) != sf::Socket::Status::Done) {
-					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
-				}
-				else {
-					std::cout << "Mensaje enviado: " << message << std::endl;
-				}
-			}
-		}
-
-		std::cout << "Desconectado" << std::endl;
-
-	}
-}
+//void main()
+//{
+//	sf::TcpSocket socket;
+//
+//	if (socket.connect(SERVER_IP, SERVER_PORT) != sf::Socket::Status::Done) {
+//		std::cerr << "Error al conectar con el servidor" << std::endl;
+//	}
+//	else {
+//		std::cout << "Conectado al servidor" << std::endl;
+//		socket.setBlocking(false);
+//		sf::Packet packet;
+//
+//		bool gameOver = false;
+//
+//		while (!gameOver) {
+//			if (socket.receive(packet) == sf::Socket::Status::Done) {
+//				tipoPaquete tipo;
+//				packet >> tipo;
+//
+//				switch (tipo) {
+//				case HANDSHAKE:
+//					Handshake(packet);
+//					break;
+//				case LOGIN:
+//					Login(packet);
+//					break;
+//				case MOVIMIENTO:
+//					break;
+//				}
+//
+//				packet.clear();
+//			}
+//			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
+//				gameOver = true;
+//			}
+//
+//			std::string message;
+//			std::cout << "Inserta mensaje para el servidor, -1 para salir" << std::endl;
+//			std::cin >> message;
+//
+//			if (message == "-1") {
+//				std::cout << "Desconectado..." << std::endl;
+//				gameOver = true;
+//			}
+//			else {
+//				sf::Packet packet;
+//				packet << message;
+//				if (socket.send(packet) != sf::Socket::Status::Done) {
+//					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
+//				}
+//				else {
+//					std::cout << "Mensaje enviado: " << message << std::endl;
+//				}
+//			}
+//		}
+//
+//		std::cout << "Desconectado" << std::endl;
+//
+//	}
+//}

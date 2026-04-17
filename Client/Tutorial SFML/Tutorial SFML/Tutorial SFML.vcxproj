@@ -136,17 +136,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\main.cpp" />
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.h" />
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.h" />
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\config.h" />
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="Cell.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

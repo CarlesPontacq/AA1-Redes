@@ -18,30 +18,36 @@
     <ClCompile Include="Source.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.cpp">
+    <ClCompile Include="Board.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.cpp">
+    <ClCompile Include="Cell.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.cpp">
+    <ClCompile Include="GameManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\main.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Board.h">
+    <ClInclude Include="Board.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\Cell.h">
+    <ClInclude Include="Cell.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\config.h">
+    <ClInclude Include="config.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\source\repos\AA1 - 3 In a Row - Logic\AA1 - 3 In a Row - Logic\GameManager.h">
+    <ClInclude Include="GameManager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

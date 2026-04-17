@@ -1,37 +1,75 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #include "Cell.h"
 #include "config.h"
+
+const float boardSideLength = WINDOW_WIDTH * 0.35f;
+
+const float boardAnchorX = 0.2f;
+const float boardAnchorY = 0.2f;
+
+const float cellPadding = 0.1f;
+
 class Board
-{
-	int width = BOARD_WIDTH;
-	int height = BOARD_HEIGHT;
+{		
 	std::vector<std::vector<Cell>> cells;
 
 public:
-	void init() {
+
+	Board() {
 		cells = std::vector<std::vector<Cell>>();
-		for (int i = 0; i < height; ++i) {
+		for (int i = 0; i < BOARD_HEIGHT; ++i) {
 			cells.push_back(std::vector<Cell>());
-			for (int j = 0; j < width; ++j) cells.back().push_back(Cell());
+			for (int j = 0; j < BOARD_WIDTH; ++j) cells.back().push_back(Cell());
 		}
 	}
 
-	void render() {
-		//TODO: Render with visuals
-		for (int row = 0; row < height; ++row) {
-			for (int column = 0; column < width; ++column) {
-				std::cout << cells[row][column].playerIndex << ' ';
+	void render(sf::RenderWindow& window) {
+		//TODO: Render with nicer visuals
+		sf::RectangleShape square;
+		square.setSize({ boardSideLength, boardSideLength });
+		square.setFillColor(sf::Color::Magenta);
+		square.setPosition({ WINDOW_WIDTH * boardAnchorX, WINDOW_HEIGHT * boardAnchorY });
+
+		window.draw(square);
+
+		for (int row = 0; row < BOARD_HEIGHT; ++row) {
+			for (int column = 0; column < BOARD_WIDTH; ++column) {
+				sf::RectangleShape cell;
+				cell.setSize({ 
+					boardSideLength / BOARD_WIDTH * (1 - cellPadding), 
+					boardSideLength / BOARD_HEIGHT * (1 - cellPadding)
+					});
+				cell.setFillColor(colours[cells[row][column].playerIndex + 1]);
+				cell.setPosition({ 
+					WINDOW_WIDTH* boardAnchorX + boardSideLength * (((float)column + cellPadding / 2) / (float)BOARD_WIDTH),
+					WINDOW_HEIGHT* boardAnchorY + boardSideLength * (((float)row + cellPadding / 2) / (float)BOARD_HEIGHT) }
+					);
+				window.draw(cell);
 			}
-			std::cout << std::endl;
 		}
+	}
+
+	inline bool validClickPos(int posX, int posY) {
+		return
+			WINDOW_WIDTH * boardAnchorX <= posX &&
+			WINDOW_WIDTH * boardAnchorX + boardSideLength >= posX &&
+			WINDOW_HEIGHT * boardAnchorY <= posY &&
+			WINDOW_HEIGHT * boardAnchorY + boardSideLength >= posY;
+	}
+
+	inline int screenToBoardX(int x) {
+		return (int)(((float)x - WINDOW_WIDTH * boardAnchorX) / boardSideLength * BOARD_WIDTH);
+	}
+
+	inline int screenToBoardY(int y) {
+		return (int)(((float)y - WINDOW_HEIGHT * boardAnchorY) / boardSideLength * BOARD_HEIGHT);
 	}
 
 	bool setCell(int row, int column, int player) {
-		if (row < 0 || row >= width ||
-			column < 0 || column >= height ||
-			cells[row][column].playerIndex >= 0)
+		if (cells[row][column].playerIndex >= 0)
 			return false;
 
 		cells[row][column].playerIndex = player;
@@ -52,6 +90,8 @@ public:
 		return false;
 	}
 
+private:
+
 	inline bool checkLine(int row1, int column1, int row2, int column2, int row3, int column3) {
 		if (!validCell(row1, column1) || !validCell(row2, column2) || !validCell(row3, column3))
 			return false;
@@ -62,7 +102,7 @@ public:
 	}
 
 	inline bool validCell(int row, int column) {
-		return row >= 0 && row < height && column >= 0 && column < width;
+		return row >= 0 && row < BOARD_HEIGHT && column >= 0 && column < BOARD_WIDTH;
 	}
 };
 
