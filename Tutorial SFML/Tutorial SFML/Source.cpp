@@ -1,63 +1,13 @@
 #include <SFML/Network.hpp>
 #include <iostream>
-
-#define LISTENER_PORT 55000
+#include "NetworkManager.h"
 
 void main()
 {
-    bool closeServer = false;
-
-    sf::TcpListener listener;
-    sf::SocketSelector selector;
-
-    std::vector <sf::TcpSocket*> clients;
-    sf::TcpSocket* newClient;
-
-    if (listener.listen(LISTENER_PORT) != sf::Socket::Status::Done) {
-        std::cerr << "Error al iniciar el servidor" << std::endl;
-        closeServer = true;
-    }
-
-    selector.add(listener);
-
-    while (!closeServer) {
-        if (selector.wait()) {
-            if (selector.isReady(listener)) {
-                newClient = new sf::TcpSocket();
-                
-                if (listener.accept(*newClient) == sf::Socket::Status::Done) {
-                    newClient->setBlocking(false);
-                    selector.add(*newClient);
-
-                    //Se crearia aqui el cliente con su clase Cliente
-
-                    clients.push_back(newClient);
-                    std::cout << "Nueva conexion establecida" << std::endl;
-                }
-            }
-            else {
-                for (int i = 0; i < clients.size(); i++) {
-                    if (selector.isReady(*clients[i])) {
-                        sf::Packet packet;
-
-                        if (clients[i]->receive(packet) == sf::Socket::Status::Done) {
-                            std::string message;
-                            packet >> message;
-
-                            std::cout << "Mensaje: " << message << std::endl;
-                        }
-
-                        if (clients[i]->receive(packet) == sf::Socket::Status::Disconnected) {
-                            selector.remove(*clients[i]);
-                            delete clients[i];
-                            clients.erase(clients.begin() + i);
-                            i--;
-
-                            std::cout << "Cliente desconectado" << std::endl;
-                        }
-                    }
-                }
-            }
+    NT->Init();
+    while (!NT->GetCloseServer()) {
+        if (NT->CheckIfSocketsAreReadyToReceive()) {
+            NT->Update();
         }
     }
 }
