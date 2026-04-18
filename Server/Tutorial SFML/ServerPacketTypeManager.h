@@ -1,5 +1,8 @@
 #pragma once
 #include <SFML/Network.hpp>
+#include "Bcrypt/bcrypt.h"
+#include "Database.h"
+
 #include <string>
 
 #define SPTM ServerPacketTypesManager::Instance()
@@ -44,6 +47,4 @@ private:
 	void ReceiveRankingPacket(sf::Packet data);
 	void ReceiveStartGamePacket(sf::Packet data);
 	void ReceiveEndGamePacket(sf::Packet data);
-
-
 };

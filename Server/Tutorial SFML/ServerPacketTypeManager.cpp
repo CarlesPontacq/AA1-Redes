@@ -114,20 +114,15 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	data >> loginUsername;
 	data >> loginPassword;
 
-	//Desencripta
+	int userId = 0;
 
-	bool correctLogin = true;
-	//Funcion para comprobar si el login es correcto segun la base de datos (Que devuelva un booleano)
-
-	if (correctLogin) {
-		std::cout << "Login correcto de: " << loginUsername << ", pasando a la siguiente escena" << std::endl;
-		//Pasar a la siguiente escena
-	}
-	else {
-		std::cout << "Login incorrecto, la contraseya o el usuario estan mal" << std::endl;
-	}
+	bool correctLogin = DB->LoginUser(loginUsername, loginPassword, userId);
 
 	SendLoginResponse(client, correctLogin, loginUsername);
+
+	if (correctLogin) {
+		//Pasar a la siguiente escena
+	}
 }
 
 void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client)
@@ -138,20 +133,15 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	data >> registerUsername;
 	data >> registerPassword;
 
-	//Desencripta
-
-	bool correctRegister = true;
-	//Funcion para comprobar si el registro es correcto, y si lo es que lo ejecute (Que devuelva un booleano)
-
-	if (correctRegister) {
-		std::cout << "Registro completado exitosamente" << std::endl;
-		//Pasar a la siguiente escena
-	}
-	else {
-		std::cout << "Registro incorrecto, la contraseya o el usuario no cumplen los requisistos" << std::endl;
-	}
+	std::string passwordHash = bcrypt::generateHash(registerPassword);
+	
+	bool correctRegister = DB->RegisterUser(registerUsername, passwordHash);
 
 	SendRegisterResponse(client, correctRegister, registerUsername);
+
+	if (correctRegister) {
+		//Pasar a la siguiente escena
+	}
 }
 
 void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)

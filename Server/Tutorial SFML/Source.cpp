@@ -5,9 +5,11 @@
 void main()
 {
     NT->Init();
+    DB->Connect();
     while (!NT->GetCloseServer()) {
         if (NT->CheckIfSocketsAreReadyToReceive()) {
             NT->Update();
         }
     }
+    DB->Disconnect();
 }
