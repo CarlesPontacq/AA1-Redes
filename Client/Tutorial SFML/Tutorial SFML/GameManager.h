@@ -29,9 +29,10 @@ public:
 		CountdownTimer* countdown = new CountdownTimer(playerManager);
 
 		sf::RectangleShape inputRect;
+		inputRect.setSize({ 100, 50 });
+		inputRect.setFillColor(sf::Color::Red);
 		sf::Text inputText(*arial);
-		inputField = new InputField(inputRect, inputText);
-		inputField->isSelected = true;
+		inputField = new InputField(inputRect, inputText, 10);
 
 		objects.push_back(static_cast<Object*>(playerManager));
 		objects.push_back(static_cast<Object*>(board));
