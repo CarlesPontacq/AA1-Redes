@@ -1,7 +1,8 @@
 #pragma once
 #include "Player.h"
 #include "User.h"
-class PlayerManager
+#include "Object.h"
+class PlayerManager : public Object
 {
 	Player players[PLAYER_COUNT];
 
@@ -17,7 +18,7 @@ public:
 						players[index] = Player(otherUsers[othersIndex], font);
 	}
 
-	void render(sf::RenderWindow& window) {
+	void render(sf::RenderWindow& window) override {
 		for (Player player : players) {
 			window.draw(player.rectangle);
 			window.draw(player.nick);

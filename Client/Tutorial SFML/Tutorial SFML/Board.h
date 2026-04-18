@@ -5,8 +5,9 @@
 #include "Cell.h"
 #include "config.h"
 #include "style.h"
+#include "Object.h"
 
-class Board
+class Board : public Object
 {		
 	std::vector<std::vector<Cell>> cells;
 
@@ -20,7 +21,7 @@ public:
 		}
 	}
 
-	void render(sf::RenderWindow& window) {
+	void render(sf::RenderWindow& window) override {
 		//TODO: Render with nicer visuals
 		sf::RectangleShape square;
 		square.setSize({ boardSideLength, boardSideLength });
