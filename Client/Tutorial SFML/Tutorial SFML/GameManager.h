@@ -2,6 +2,7 @@
 #include "User.h"
 #include "Board.h"
 #include "PlayerManager.h"
+#include "InputField.h"
 
 class GameManager
 {
@@ -17,11 +18,16 @@ class GameManager
 	bool countdownActive = false;
 	sf::Clock countdownClock;
 
+	sf::Font* arial;
+	InputField inputField;
+
 public:
 
 	GameManager(User _user, User _otherUsers[PLAYER_COUNT - 1]) :
-	user(_user), currentPlayer(0), playerManager(_user, _otherUsers)
+		user(_user), currentPlayer(0), arial(new sf::Font("arial.ttf"))
 	{
+		playerManager = PlayerManager(_user, _otherUsers, *arial);
+
 		for (int i = 0; i < PLAYER_COUNT - 1; ++i) otherUsers[i] = _otherUsers[i];
 
 		window = new sf::RenderWindow(sf::VideoMode({ WINDOW_WIDTH, WINDOW_HEIGHT }), WINDOW_NAME);
@@ -30,6 +36,11 @@ public:
 
 		for (int i = 0; i < PLAYER_COUNT; ++i)
 			winners.push_back(false);
+
+		sf::RectangleShape inputRect;
+		sf::Text inputText(*arial);
+		inputField = InputField(inputRect, inputText);
+		inputField.isSelected = true;
 	}
 
 	~GameManager() {
@@ -67,6 +78,10 @@ private:
 				break;
 			}
 		}
+
+		if (const sf::Event::KeyPressed* keyPressed = event.getIf<sf::Event::KeyPressed>()) {
+			inputField.getChar(keyPressed->code);
+		}
 	}
 
 	void render() {
@@ -74,6 +89,7 @@ private:
 
 		board.render(*window);
 		playerManager.render(*window);
+		inputField.render(*window);
 
 		window->display();
 	}

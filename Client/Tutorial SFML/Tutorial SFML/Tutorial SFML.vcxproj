@@ -139,6 +139,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="InputField.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -152,12 +153,16 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="InputField.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="ServerPacketTypesManager.h" />
     <ClInclude Include="style.h" />
     <ClInclude Include="User.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
