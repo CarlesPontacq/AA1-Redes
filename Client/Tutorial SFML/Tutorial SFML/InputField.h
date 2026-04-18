@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Object.h"
+#include "style.h"
 
 class InputField : public Object
 {

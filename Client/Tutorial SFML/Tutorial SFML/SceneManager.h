@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "GameManager.h"
 #include "LoginScene.h"
+#include "LobbyScene.h"
 #include <string>
 #include "User.h"
 #include "config.h"
@@ -24,6 +25,7 @@ public:
 
 		scenes["Game"] = new GameScene(user, otherUsers);
 		scenes["Login"] = new LoginScene();
+		scenes["Lobby"] = new LobbyScene();
 		curScene = scenes["Login"];
 		curScene->enter();
 	}

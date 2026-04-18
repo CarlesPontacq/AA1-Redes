@@ -45,7 +45,7 @@ public:
 		registerRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
 		registerRect.setPosition({ WINDOW_WIDTH * 0.5f - registerRect.getSize().x / 2, WINDOW_HEIGHT * 0.7f });
 		registerRect.setFillColor(sf::Color::Red);
-		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [&]() { this->nextScene = "Game"; });
+		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [&]() { this->nextScene = "Lobby"; });
 
 		objects.push_back(registerButton);
 	}
