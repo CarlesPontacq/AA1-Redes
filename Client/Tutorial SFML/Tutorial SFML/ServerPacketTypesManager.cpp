@@ -1,5 +1,4 @@
-#include "ServerPacketTypeManager.h"
-#include <iostream>
+#include "ServerPacketTypesManager.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -17,7 +16,7 @@ sf::Packet& operator<<(sf::Packet& packet, PacketTypes& tipo) {
 	return packet;
 }
 
-void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& client)
+void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 {
 	PacketTypes packetType;
 
@@ -29,10 +28,10 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 		ReceiveHandshakePacket(packet);
 		break;
 	case PacketTypes::LOGIN:
-		ReceiveLoginPacket(packet, client);
+		ReceiveLoginPacket(packet);
 		break;
 	case PacketTypes::REGISTER:
-		ReceiveRegisterPacket(packet, client);
+		ReceiveRegisterPacket(packet);
 		break;
 	case PacketTypes::LOOBY_CREATE:
 		ReceiveLobbyCreatePacket(packet);
@@ -50,16 +49,16 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 		ReceiveEndGamePacket(packet);
 		break;
 	default:
-		std::cout << "No se ha identificado el tipo de packete" << std::endl;
+		std::cout << "No se ha identificado el tipo de paquete" << std::endl;
 		break;
 	}
 
 	packet.clear();
 }
 
-void ServerPacketTypesManager::SendData(sf::TcpSocket& client, sf::Packet& packet)
+void ServerPacketTypesManager::SendData(sf::TcpSocket& socket, sf::Packet& packet)
 {
-	if (client.send(packet) == sf::Socket::Status::Done) {
+	if (socket.send(packet) == sf::Socket::Status::Done) {
 		std::cout << "Enviando paquete..." << std::endl;
 	}
 	else {
@@ -67,91 +66,68 @@ void ServerPacketTypesManager::SendData(sf::TcpSocket& client, sf::Packet& packe
 	}
 }
 
-void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& client)
+void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& server)
 {
 	sf::Packet packet;
 	packet << PacketTypes::HANDSHAKE << handshakeMessage;
-	SendData(client, packet);
+	SendData(server, packet);
 }
 
-void ServerPacketTypesManager::SendLoginResponse(sf::TcpSocket& client, bool success, const std::string& username)
+void ServerPacketTypesManager::SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
 	sf::Packet packet;
 	packet << PacketTypes::LOGIN;
-	packet << success;
 	packet << username;
-
-	SendData(client, packet);
-
-	std::cout << "Respuesta de login enviada" << std::endl;
+	packet << password;
+	SendData(server, packet);
 }
 
-void ServerPacketTypesManager::SendRegisterResponse(sf::TcpSocket& client, bool success, const std::string& username)
+void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
 	sf::Packet packet;
 	packet << PacketTypes::REGISTER;
-	packet << success;
 	packet << username;
-
-	SendData(client, packet);
-
-	std::cout << "Respuesta de registro enviada" << std::endl;
+	packet << password;
+	SendData(server, packet);
 }
 
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
 	data >> receiveMesage;
-
-	std::cout << "Mensaje enviado del cliente: " << receiveMesage << std::endl;
+	std::cout << "Mensaje enviado del servidor: " << receiveMesage << std::endl;
 }
 
-void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket& client)
+void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data)
 {
-	std::string loginUsername;
-	std::string loginPassword;
+	bool success;
+	std::string username;
 
-	data >> loginUsername;
-	data >> loginPassword;
+	data >> success;
+	data >> username;
 
-	//Desencripta
-
-	bool correctLogin = true;
-	//Funcion para comprobar si el login es correcto segun la base de datos (Que devuelva un booleano)
-
-	if (correctLogin) {
-		std::cout << "Login correcto de: " << loginUsername << ", pasando a la siguiente escena" << std::endl;
-		//Pasar a la siguiente escena
+	if (success) {
+		std::cout << "Login correcto! Bienvenido " << username << std::endl;
 	}
 	else {
-		std::cout << "Login incorrecto, la contraseya o el usuario estan mal" << std::endl;
+		std::cout << "Login incorrecto" << std::endl;
 	}
-
-	SendLoginResponse(client, correctLogin, loginUsername);
 }
 
-void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client)
+void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 {
-	std::string registerUsername;
-	std::string registerPassword;
+	bool success;
+	std::string username;
 
-	data >> registerUsername;
-	data >> registerPassword;
+	data >> success;
+	data >> username;
 
-	//Desencripta
-
-	bool correctRegister = true;
-	//Funcion para comprobar si el registro es correcto, y si lo es que lo ejecute (Que devuelva un booleano)
-
-	if (correctRegister) {
-		std::cout << "Registro completado exitosamente" << std::endl;
-		//Pasar a la siguiente escena
+	if (success) {
+		std::cout << "Registro correcto! Usuario " << username << " creado" << std::endl;
 	}
 	else {
-		std::cout << "Registro incorrecto, la contraseya o el usuario no cumplen los requisistos" << std::endl;
+		std::cout << "Registro fallido " << std::endl;
 	}
-
-	SendRegisterResponse(client, correctRegister, registerUsername);
 }
 
 void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
@@ -163,7 +139,7 @@ void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
 	bool lobbyIDIsAvailable = false;
 
 	//Funcion para comprobar si el ID esta disponible
-	 
+
 	if (lobbyIDIsAvailable) {
 		//Añadir el jugador en el lobby
 		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
