@@ -8,6 +8,15 @@ public:
 
 	std::string nextScene = "";
 
+	virtual void enter() {}
+	virtual void exit() {
+		while (!objects.empty()) {
+			Object* obj = objects.back();
+			delete obj;
+			objects.pop_back();
+		}
+	}
+
 	virtual bool update(sf::RenderWindow& window) {
 		if (!window.isOpen()) return false;
 
