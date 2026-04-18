@@ -1,6 +1,7 @@
 #pragma once
 #include "User.h"
 #include "Board.h"
+#include "PlayerManager.h"
 
 class GameManager
 {
@@ -9,6 +10,7 @@ class GameManager
 	User user;
 	User otherUsers[PLAYER_COUNT - 1];
 	Board board;
+	PlayerManager playerManager;
 	int currentPlayer;
 	std::vector<bool> winners;
 
@@ -18,7 +20,7 @@ class GameManager
 public:
 
 	GameManager(User _user, User _otherUsers[PLAYER_COUNT - 1]) :
-	user(_user), currentPlayer(0)
+	user(_user), currentPlayer(0), playerManager(_user, _otherUsers)
 	{
 		for (int i = 0; i < PLAYER_COUNT - 1; ++i) otherUsers[i] = _otherUsers[i];
 
@@ -71,6 +73,7 @@ private:
 		window->clear(sf::Color(0x000000FF));
 
 		board.render(*window);
+		playerManager.render(*window);
 
 		window->display();
 	}

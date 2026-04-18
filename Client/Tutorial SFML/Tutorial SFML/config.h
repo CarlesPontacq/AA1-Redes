@@ -9,11 +9,3 @@
 #define PLAYER_COUNT 4
 
 #define PLAYER_COUNTDOWN 20.0f //In seconds
-
-const sf::Color colours[PLAYER_COUNT + 1] = {
-		sf::Color::Black, //Default
-		sf::Color::Red,
-		sf::Color::Green,
-		sf::Color::Blue,
-		sf::Color::Yellow
-};

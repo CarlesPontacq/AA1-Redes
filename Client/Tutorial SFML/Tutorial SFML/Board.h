@@ -4,13 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Cell.h"
 #include "config.h"
-
-const float boardSideLength = WINDOW_WIDTH * 0.35f;
-
-const float boardAnchorX = 0.2f;
-const float boardAnchorY = 0.2f;
-
-const float cellPadding = 0.1f;
+#include "style.h"
 
 class Board
 {		
