@@ -3,15 +3,15 @@
 #include "Board.h"
 #include "PlayerManager.h"
 #include "InputField.h"
+#include "Scene.h"
+#include "Object.h"
 
-class GameManager
+class GameScene : public Scene
 {
-	sf::RenderWindow* window;
-
 	User user;
 	User otherUsers[PLAYER_COUNT - 1];
-	Board board;
-	PlayerManager playerManager;
+	Board* board;
+	PlayerManager* playerManager;
 	int currentPlayer;
 	std::vector<bool> winners;
 
@@ -19,53 +19,37 @@ class GameManager
 	sf::Clock countdownClock;
 
 	sf::Font* arial;
-	InputField inputField;
+	InputField* inputField;
 
 public:
 
-	GameManager(User _user, User _otherUsers[PLAYER_COUNT - 1]) :
+	GameScene(User _user, User _otherUsers[PLAYER_COUNT - 1]) :
 		user(_user), currentPlayer(0), arial(new sf::Font("arial.ttf"))
 	{
-		playerManager = PlayerManager(_user, _otherUsers, *arial);
+		playerManager = new PlayerManager(_user, _otherUsers, *arial);
 
 		for (int i = 0; i < PLAYER_COUNT - 1; ++i) otherUsers[i] = _otherUsers[i];
 
-		window = new sf::RenderWindow(sf::VideoMode({ WINDOW_WIDTH, WINDOW_HEIGHT }), WINDOW_NAME);
-
-		board = Board();
+		board = new Board();
 
 		for (int i = 0; i < PLAYER_COUNT; ++i)
 			winners.push_back(false);
 
 		sf::RectangleShape inputRect;
 		sf::Text inputText(*arial);
-		inputField = InputField(inputRect, inputText);
-		inputField.isSelected = true;
+		inputField = new InputField(inputRect, inputText);
+		inputField->isSelected = true;
+
+		objects.push_back(static_cast<Object*>(playerManager));
+		objects.push_back(static_cast<Object*>(board));
+		objects.push_back(static_cast<Object*>(inputField));
 	}
 
-	~GameManager() {
-		delete window;
-	}
+protected:
 
-	bool update() {
-
-		if (!window->isOpen()) return false;
-
-		playerTimer();
-
-		while (const std::optional event = window->pollEvent())
-			handleEvent(*event);
-
-		render();
-
-		return true;
-	}
-
-private:
-
-	void handleEvent(const sf::Event& event) {
+	void handleEvent(const sf::Event& event, sf::RenderWindow& window) override {
 		if (event.is<sf::Event::Closed>())
-			window->close();
+			window.close();
 
 		if (const sf::Event::MouseButtonPressed* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
 
@@ -80,30 +64,20 @@ private:
 		}
 
 		if (const sf::Event::KeyPressed* keyPressed = event.getIf<sf::Event::KeyPressed>()) {
-			inputField.getChar(keyPressed->code);
+			inputField->getChar(keyPressed->code);
 		}
 	}
 
-	void render() {
-		window->clear(sf::Color(0x000000FF));
-
-		board.render(*window);
-		playerManager.render(*window);
-		inputField.render(*window);
-
-		window->display();
-	}
-
 	void playTurn(int posX, int posY) {
-		if (!board.validClickPos(posX, posY)) return;
+		if (!board->validClickPos(posX, posY)) return;
 
-		int row = board.screenToBoardY(posY);
-		int column = board.screenToBoardX(posX);
+		int row = board->screenToBoardY(posY);
+		int column = board->screenToBoardX(posX);
 
-		if(!board.setCell(row, column, currentPlayer))
+		if(!board->setCell(row, column, currentPlayer))
 			return;
 
-		if (board.checkWin(row, column)) 
+		if (board->checkWin(row, column)) 
 			winners[currentPlayer] = true;
 
 		nextPlayer();
