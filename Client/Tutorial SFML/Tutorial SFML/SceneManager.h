@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "Scene.h"
 #include "GameManager.h"
+#include "LoginScene.h"
 #include <string>
 #include "User.h"
 #include "config.h"
@@ -22,12 +23,17 @@ public:
 		};
 
 		scenes["Game"] = new GameScene(user, otherUsers);
-		curScene = scenes["Game"];
+		scenes["Login"] = new LoginScene();
+		curScene = scenes["Login"];
+		curScene->enter();
 	}
 
 	bool update(sf::RenderWindow& window) {
-		if (curScene->nextScene != "")
+		if (curScene->nextScene != "") {
+			curScene->exit();
 			curScene = scenes[curScene->nextScene];
+			curScene->enter();
+		}
 
 		return curScene->update(window);
 	}

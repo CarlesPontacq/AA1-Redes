@@ -45,6 +45,7 @@ public:
 
 	void render(sf::RenderWindow& window) override {
 		text.setString(str);
+		text.setPosition({ box.getPosition().x + text.getCharacterSize(), box.getPosition().y + box.getSize().y / 2.0f - text.getCharacterSize() / 2.0f});
 		window.draw(box);
 		window.draw(text);
 	}
