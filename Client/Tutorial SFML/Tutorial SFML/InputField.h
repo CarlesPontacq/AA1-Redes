@@ -38,5 +38,10 @@ public:
 		window.draw(box);
 		window.draw(text);
 	}
+
+	void handleEvent(const sf::Event& event) override {
+		if (const sf::Event::KeyPressed* keyPressed = event.getIf<sf::Event::KeyPressed>())
+			getChar(keyPressed->code);
+	}
 };
 
