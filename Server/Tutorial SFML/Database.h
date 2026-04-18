@@ -9,16 +9,23 @@
 #include <cppconn/prepared_statement.h>
 #include <cppconn/resultset.h>
 
+#include "Bcrypt/bcrypt.h"
+
 #define SERVER "127.0.0.1:3306"
 #define USERNAME "root"
-#define PASSWORD "enti"
+#define PASSWORD ""
 #define DATABASE "tres_en_raya_online"
+
+#define DB Database::Instance()
 
 class Database
 {
 public:
-    Database();
-    ~Database();
+    static Database* Instance() {
+        static Database db;
+
+        return &db;
+    }
 
     bool Connect();
     void Disconnect();
@@ -31,5 +38,8 @@ private:
     sql::Connection* con;
 
 private:
+    Database();
+    ~Database();
+
     bool UserExists(const std::string& nickname);
 };
