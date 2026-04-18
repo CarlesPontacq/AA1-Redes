@@ -10,6 +10,14 @@ void NetworkManager::Init()
     }
 
     selector.add(listener);
+    std::cout << "Servidor Abierto" << std::endl;
+}
+
+void NetworkManager::Update()
+{
+    EstablishConnectionWithClient();
+    ReceiveClientPacket();
+    CheckForDisconnection();
 }
 
 void NetworkManager::EstablishConnectionWithClient()
