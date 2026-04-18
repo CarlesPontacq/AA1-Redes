@@ -1,4 +1,5 @@
 #include "ServerPacketTypeManager.h"
+#include "MatchmakingManager.h"
 #include <iostream>
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
@@ -119,8 +120,13 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	bool correctLogin = true;
 	//Funcion para comprobar si el login es correcto segun la base de datos (Que devuelva un booleano)
 
+	// Si es correcto, guardar también los datos del usuario (nombre y puntos del ranking)
+
 	if (correctLogin) {
 		std::cout << "Login correcto de: " << loginUsername << ", pasando a la siguiente escena" << std::endl;
+		
+		MM->AddConnectedPlayer(&client, loginUsername, 15);
+
 		//Pasar a la siguiente escena
 	}
 	else {

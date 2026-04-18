@@ -3,7 +3,7 @@
 #include "GameManager.h"
 #include "User.h"
 
-
+/*
 
 int main() {
 
@@ -18,4 +18,4 @@ int main() {
 
 	GameManager gm = GameManager(user, otherUsers);
 	while (gm.update());
-}
+}*/
