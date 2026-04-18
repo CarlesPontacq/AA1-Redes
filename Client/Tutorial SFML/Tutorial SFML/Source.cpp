@@ -1,36 +1,10 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <string>
+#include "ServerPacketTypesManager.h"
 
 #define SERVER_PORT 55000
 const sf::IpAddress SERVER_IP = sf::IpAddress(127, 0, 0, 1);
-
-enum tipoPaquete { HANDSHAKE, LOGIN, MOVIMIENTO };
-
-sf::Packet& operator>>(sf::Packet& packet, tipoPaquete& tipo) {
-	int temp;
-	packet >> temp;
-	tipo = static_cast<tipoPaquete>(temp);
-
-	return packet;
-}
-
-void Handshake(sf::Packet data) {
-	std::string receiveMessage;
-	data >> receiveMessage;
-
-	std::cout << "Mensaje enviado del servidor: " << receiveMessage << std::endl;
-}
-
-void Login(sf::Packet data) {
-	std::string user;
-	std::string pass;
-	data >> user;
-	data >> pass;
-
-	std::cout << "El usuario es: " << user << " con la password: " << pass << std::endl;
-}
-
 
 void main()
 {
@@ -42,50 +16,56 @@ void main()
 	else {
 		std::cout << "Conectado al servidor" << std::endl;
 		socket.setBlocking(false);
-		sf::Packet packet;
-
 		bool gameOver = false;
 
+		SPTM->SendHandshake(socket);
+
 		while (!gameOver) {
-			if (socket.receive(packet) == sf::Socket::Status::Done) {
-				tipoPaquete tipo;
-				packet >> tipo;
+			sf::Packet receivePacket;
 
-				switch (tipo) {
-				case HANDSHAKE:
-					Handshake(packet);
-					break;
-				case LOGIN:
-					Login(packet);
-					break;
-				case MOVIMIENTO:
-					break;
-				}
-
-				packet.clear();
+			if (socket.receive(receivePacket) == sf::Socket::Status::Done) {
+				SPTM->ReceivePacket(receivePacket);
 			}
-			if (socket.receive(packet) == sf::Socket::Status::Disconnected) {
+
+			if (socket.receive(receivePacket) == sf::Socket::Status::Disconnected) {
 				gameOver = true;
 			}
 
-			std::string message;
-			std::cout << "Inserta mensaje para el servidor, -1 para salir" << std::endl;
-			std::cin >> message;
+			std::cout << "\n=== MENU ===" << std::endl;
+			std::cout << "1. Login" << std::endl;
+			std::cout << "2. Register" << std::endl;
+			std::cout << "3. Salir" << std::endl;
+			std::cout << "Opcion: ";
 
-			if (message == "-1") {
-				std::cout << "Desconectado..." << std::endl;
+			int opcion;
+			std::cin >> opcion;
+
+			if (opcion == 1) {
+				// LOGIN
+				std::string username, password;
+				std::cout << "Usuario: ";
+				std::cin >> username;
+				std::cout << "Contrasenya: ";
+				std::cin >> password;
+
+				SPTM->SendLoginAttempt(username, password, socket);
+			}
+			else if (opcion == 2) {
+				// REGISTER
+				std::string username, password;
+				std::cout << "Nuevo usuario: ";
+				std::cin >> username;
+				std::cout << "Contrasenya : ";
+				std::cin >> password;
+
+				SPTM->SendRegisterAttempt(username, password, socket);
+			}
+			else if (opcion == 3) {
+				std::cout << "Desconectando..." << std::endl;
 				gameOver = true;
 			}
-			else {
-				sf::Packet packet;
-				packet << message;
-				if (socket.send(packet) != sf::Socket::Status::Done) {
-					std::cerr << "Error al enviar el paquete al servidor" << std::endl;
-				}
-				else {
-					std::cout << "Mensaje enviado: " << message << std::endl;
-				}
-			}
+
+			sf::sleep(sf::milliseconds(100));
 		}
 
 		std::cout << "Desconectado" << std::endl;

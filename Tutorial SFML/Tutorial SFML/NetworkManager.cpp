@@ -19,9 +19,9 @@ void NetworkManager::EstablishConnectionWithClient()
 
         if (listener.accept(*newClient) == sf::Socket::Status::Done) {
             newClient->setBlocking(false);
+            
+            SPTM->SendHandshake(*newClient);
             selector.add(*newClient);
-
-            //Hacer Handshake
 
             //Se crearia aqui el cliente con su clase Cliente
 
@@ -31,7 +31,7 @@ void NetworkManager::EstablishConnectionWithClient()
     }
 }
 
-void NetworkManager::ReceiveAllClientPacket()
+void NetworkManager::ReceiveClientPacket()
 {
     if (!selector.isReady(listener)) {
         for (int i = 0; i < clients.size(); i++) {
@@ -39,12 +39,7 @@ void NetworkManager::ReceiveAllClientPacket()
                 sf::Packet packet;
 
                 if (clients[i]->receive(packet) == sf::Socket::Status::Done) {
-                    //Comprobar que tipo de paquete es y manejarlo respecto a eso
-                    
-                    std::string message;
-                    packet >> message;
-
-                    std::cout << "Mensaje: " << message << std::endl;
+                    SPTM->ReceivePacket(packet, *clients[i]);
                 }
             }
         }
