@@ -23,9 +23,7 @@ private:
 
 public:
 	void Init();
-	void EstablishConnectionWithServer();
 	void Update();
-	void CheckForServerDisconnection();
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
@@ -36,6 +34,7 @@ private:
 	NetworkManager& operator=(const NetworkManager& nt) = delete;
 	~NetworkManager() = default;
 
+	void EstablishConnectionWithServer();
 	void HandleReceivedPackets();
 	void SendServerPacket();
 };

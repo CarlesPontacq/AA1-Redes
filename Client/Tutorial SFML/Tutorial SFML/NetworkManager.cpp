@@ -15,10 +15,9 @@ void NetworkManager::EstablishConnectionWithServer()
     else {
         socket.setBlocking(false);
         SPTM->SendHandshake(socket);
+        HandleReceivedPackets();
         std::cout << "Conectado al servidor" << std::endl;
     }
-
-    HandleReceivedPackets();
 }
 
 void NetworkManager::Update()
@@ -26,7 +25,6 @@ void NetworkManager::Update()
     if (!disconnectFromServer) {
         HandleReceivedPackets();
         SendServerPacket();
-        CheckForServerDisconnection();
     }
 }
 
@@ -35,6 +33,10 @@ void NetworkManager::HandleReceivedPackets()
     sf::Packet receivePacket;
     if(socket.receive(receivePacket) == sf::Socket::Status::Done) {
         SPTM->ReceivePacket(receivePacket);
+    }
+    else if (socket.receive(receivePacket) == sf::Socket::Status::Disconnected) {
+        std::cout << "Servidor desconectado" << std::endl;
+        disconnectFromServer = true;
     }
 }
 
@@ -73,13 +75,4 @@ void NetworkManager::SendServerPacket()
         std::cout << "Desconectando..." << std::endl;
         disconnectFromServer = true;
     }
-}
-
-void NetworkManager::CheckForServerDisconnection()
-{
-    sf::Packet disconnectPacket;
-    if (socket.receive(disconnectPacket) == sf::Socket::Status::Disconnected) {
-        std::cout << "Servidor desconectado" << std::endl;
-        disconnectFromServer = true;
-    }  
 }

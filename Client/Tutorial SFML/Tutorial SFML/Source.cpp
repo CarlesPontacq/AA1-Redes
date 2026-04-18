@@ -9,5 +9,4 @@ void main()
 	while (!NT->GetDisconnectFromServer()) {
 		NT->Update();
 	}
-
 }
