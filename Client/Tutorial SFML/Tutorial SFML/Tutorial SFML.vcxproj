@@ -139,6 +139,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="InputField.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="InputField.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />

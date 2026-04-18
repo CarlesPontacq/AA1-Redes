@@ -2,6 +2,8 @@
 #include "config.h"
 #include <SFML/Graphics.hpp>
 
+const sf::Font nullFont = sf::Font::Font();
+
 #pragma region Board
 
 const sf::Color colours[PLAYER_COUNT + 1] = {
