@@ -137,12 +137,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="NetworkManager.cpp" />
-    <ClCompile Include="PacketTypes.cpp" />
+    <ClCompile Include="ServerPacketTypeManager.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkManager.h" />
-    <ClInclude Include="PacketTypes.h" />
+    <ClInclude Include="ServerPacketTypeManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
