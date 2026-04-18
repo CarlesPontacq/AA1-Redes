@@ -1,5 +1,9 @@
 #include "NetworkManager.h"
 
+void NetworkManager::Init() {
+    EstablishConnectionWithServer();
+}
+
 void NetworkManager::EstablishConnectionWithServer()
 {
     disconnectFromServer = false;
@@ -13,11 +17,23 @@ void NetworkManager::EstablishConnectionWithServer()
         SPTM->SendHandshake(socket);
         std::cout << "Conectado al servidor" << std::endl;
     }
+
+    HandleReceivedPackets();
 }
 
-void NetworkManager::ReceiveServerPacket()
+void NetworkManager::Update()
 {
-    if (socket.receive(receivePacket) == sf::Socket::Status::Done) {
+    if (!disconnectFromServer) {
+        HandleReceivedPackets();
+        SendServerPacket();
+        CheckForServerDisconnection();
+    }
+}
+
+void NetworkManager::HandleReceivedPackets()
+{
+    sf::Packet receivePacket;
+    if(socket.receive(receivePacket) == sf::Socket::Status::Done) {
         SPTM->ReceivePacket(receivePacket);
     }
 }
@@ -61,7 +77,9 @@ void NetworkManager::SendServerPacket()
 
 void NetworkManager::CheckForServerDisconnection()
 {
-    if (socket.receive(receivePacket) == sf::Socket::Status::Disconnected) {
+    sf::Packet disconnectPacket;
+    if (socket.receive(disconnectPacket) == sf::Socket::Status::Disconnected) {
+        std::cout << "Servidor desconectado" << std::endl;
         disconnectFromServer = true;
     }  
 }

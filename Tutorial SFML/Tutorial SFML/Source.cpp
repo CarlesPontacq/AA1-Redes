@@ -5,12 +5,9 @@
 void main()
 {
     NT->Init();
-
     while (!NT->GetCloseServer()) {
         if (NT->CheckIfSocketsAreReadyToReceive()) {
-            NT->EstablishConnectionWithClient();
-            NT->ReceiveClientPacket();
-            NT->CheckForDisconnection();
+            NT->Update();
         }
     }
 }

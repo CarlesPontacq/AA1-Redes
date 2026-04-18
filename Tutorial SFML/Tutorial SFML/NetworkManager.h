@@ -26,6 +26,7 @@ private:
 	
 public:
 	void Init();
+	void Update();
 	void EstablishConnectionWithClient();
 	void ReceiveClientPacket();
 	void CheckForDisconnection();

@@ -20,13 +20,11 @@ public:
 private:
 	bool disconnectFromServer;
 	sf::TcpSocket socket;
-	sf::Packet receivePacket;
 
 public:
 	void Init();
 	void EstablishConnectionWithServer();
-	void ReceiveServerPacket();
-	void SendServerPacket();
+	void Update();
 	void CheckForServerDisconnection();
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
@@ -37,5 +35,8 @@ private:
 	NetworkManager(const NetworkManager& nt) = delete;
 	NetworkManager& operator=(const NetworkManager& nt) = delete;
 	~NetworkManager() = default;
+
+	void HandleReceivedPackets();
+	void SendServerPacket();
 };
 

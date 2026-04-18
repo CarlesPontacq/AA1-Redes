@@ -5,11 +5,9 @@
 
 void main()
 {
-	NT->EstablishConnectionWithServer();
+	NT->Init();
 	while (!NT->GetDisconnectFromServer()) {
-		NT->ReceiveServerPacket();
-		NT->SendServerPacket();
-		NT->CheckForServerDisconnection();
+		NT->Update();
 	}
 
 }
