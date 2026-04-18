@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Object.h"
 
-class InputField
+class InputField : public Object
 {
 public:
 	sf::RectangleShape box;
@@ -32,10 +33,15 @@ public:
 			str.push_back('A' + (char)key);
 	}
 
-	void render(sf::RenderWindow& window) {
+	void render(sf::RenderWindow& window) override {
 		text.setString(str);
 		window.draw(box);
 		window.draw(text);
+	}
+
+	void handleEvent(const sf::Event& event) override {
+		if (const sf::Event::KeyPressed* keyPressed = event.getIf<sf::Event::KeyPressed>())
+			getChar(keyPressed->code);
 	}
 };
 
