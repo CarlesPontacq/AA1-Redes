@@ -6,12 +6,12 @@
 struct Player
 {
 	sf::RectangleShape rectangle;
-	sf::Font* arial;
+	
 	sf::Text nick;
 
-	Player() : arial(new sf::Font("arial.ttf")), nick(*arial) {}
+	Player() : nick(nullFont) {}
 
-	Player(User user) : arial(new sf::Font("arial.ttf")), nick(*arial) {
+	Player(User user, sf::Font& font) : nick(font) {
 		rectangle.setPosition({
 			WINDOW_WIDTH * playersAnchorX,
 			WINDOW_HEIGHT * playersAnchorY + user.userIndex * (playersHeight + playersSeparation)
