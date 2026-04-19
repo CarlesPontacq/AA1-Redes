@@ -20,6 +20,7 @@ public:
 private:
 	bool disconnectFromServer;
 	sf::TcpSocket socket;
+	bool successfulLogin = false;
 
 public:
 	void Init();
@@ -27,6 +28,9 @@ public:
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
+	inline void SetSuccessfulLogin(bool successful) { successfulLogin = successful; }
+	inline bool GetSuccessfulLogin() { return successfulLogin; }
+
 	sf::TcpSocket* GetServerSocket();
 	void SendLoginAttemptServerPacket(std::string username, std::string password);
 	void SendRegisterAttemptServerPacket(std::string username, std::string password);

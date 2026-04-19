@@ -8,6 +8,7 @@
 #include "User.h"
 #include "config.h"
 #include "SharedMemory.h"
+
 class SceneManager
 {
 	std::unordered_map<std::string, Scene*> scenes;

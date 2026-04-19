@@ -55,5 +55,13 @@ public:
 
 		objects.push_back(registerButton);
 	}
+
+	bool update(sf::RenderWindow& window) override
+	{
+		if (NT->GetSuccessfulLogin())
+			nextScene = "Lobby";
+
+		return Scene::update(window);
+	}
 };
 
