@@ -85,6 +85,7 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 
 			if (waitingRooms[i].IsFull())
 			{
+				std::cout << "Sala " << roomId << " completa. Envíando info para empezar a los jugadores." << std::endl;
 				SPTM->SendInfoToStartGame(waitingRooms[i]);
 			}
 

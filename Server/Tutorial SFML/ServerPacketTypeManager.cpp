@@ -111,6 +111,7 @@ void ServerPacketTypesManager::SendInfoToStartGame(GameRoom game)
 		}
 
 		SendData(*game.GetPlayer(i)->client, packet);
+		std::cout << "Enviada información a jugador " << i << " de la sala.";
 	}
 }
 

@@ -265,7 +265,27 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
-	LM.add
+	std::string gameId = "";
+	data >> gameId;
+
+	for (int i = 0; i < 4; i++)
+	{
+		std::string ipString;
+		unsigned short port;
+
+		User user;
+		data >> user.userIndex;
+		data >> ipString;
+		data >> port;
+		data >> user.nickname;
+		data >> user.score;
+
+		std::cout << "Info recibida de jugador " << user.userIndex << ": " << std::endl;
+		std::cout << " IP: " << ipString << std::endl;
+		std::cout << " Port: " << port << std::endl;
+		std::cout << " Nickname: " << user.nickname << std::endl;
+		std::cout << " Score: " << user.score << std::endl;
+	}
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

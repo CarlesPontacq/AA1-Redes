@@ -61,9 +61,9 @@ void NetworkManager::SendLobbyJoinAttemptPacket(std::string lobbyId)
     SPTM->SendLobbyJoinAttempt(lobbyId, socket);
 }
 
-void NetworkManager::SendStartGameResponse(std::string lobbyId, sf::TcpSocket& server)
+void NetworkManager::SendStartGameResponse(std::string lobbyId)
 {
-    SPTM->SendStartGameResponse()
+    SPTM->SendStartGameResponse(lobbyId, socket);
 }
 
 void NetworkManager::HandleReceivedPackets()

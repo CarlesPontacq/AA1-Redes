@@ -29,6 +29,6 @@ public:
 	}
 	int GetPlayerAmount() { return playersAdded; }
 	bool CanDisconnectRoom() { return playersStarted >= 4; }
-	int AddToStartedPlayers() { playersStarted++; }
+	void AddToStartedPlayers() { playersStarted++; }
 	bool IsFull() { return playersAdded == 4; }
 };
