@@ -30,8 +30,8 @@ public:
 		createRect.setPosition({ WINDOW_WIDTH * 0.29f, WINDOW_HEIGHT * 0.5f });
 		createRect.setFillColor(sf::Color::Red);
 		Button* createButton = new Button(createRect, sf::Text(*arial, "Create lobby"), [lobbyField]() {
-			SPTM->SendLobbyCreateAttempt(lobbyField->str, *NT->GetServerSocket());
-			std::cout << "Lobby creada con id: " << lobbyField->str;
+			SPTM->SendLobbyCreateAttempt(lobbyField->realStr, *NT->GetServerSocket());
+			std::cout << "Lobby creada con id: " << lobbyField->realStr;
 			});
 
 		objects.push_back(createButton);

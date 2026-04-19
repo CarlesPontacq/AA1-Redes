@@ -24,7 +24,7 @@ void NetworkManager::Update()
 {
     if (!disconnectFromServer) {
         HandleReceivedPackets();
-        SendServerPacket();
+        //SendServerPacket();
     }
 }
 
@@ -34,6 +34,16 @@ sf::TcpSocket* NetworkManager::GetServerSocket()
         return &socket;
     
     return nullptr;
+}
+
+void NetworkManager::SendLoginAttemptServerPacket(std::string username, std::string password)
+{
+    SPTM->SendLoginAttempt(username, password, socket);
+}
+
+void NetworkManager::SendRegisterAttemptServerPacket(std::string username, std::string password)
+{
+    SPTM->SendRegisterAttempt(username, password, socket);
 }
 
 void NetworkManager::HandleReceivedPackets()
