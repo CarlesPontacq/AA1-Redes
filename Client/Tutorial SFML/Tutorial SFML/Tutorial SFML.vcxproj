@@ -164,6 +164,7 @@
     <ClInclude Include="CountdownTimer.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="InputField.h" />
+    <ClInclude Include="LobbyManager.h" />
     <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="LoginScene.h" />
     <ClInclude Include="NetworkManager.h" />
