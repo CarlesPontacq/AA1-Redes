@@ -51,7 +51,7 @@ public:
 	bool update(sf::RenderWindow& window) override
 	{
 		if (LM->GetRoomJoined())
-			nextScene = "Game";
+			nextScene = "LobbyWait";
 
 		return Scene::update(window);
 	}

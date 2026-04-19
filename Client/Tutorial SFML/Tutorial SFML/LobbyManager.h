@@ -12,6 +12,7 @@ public:
 	}
 private:
 	bool roomJoined = false;
+	bool gameStarted = false;
 
 public:
 	void JoinRoom()
@@ -19,7 +20,13 @@ public:
 		roomJoined = true;
 	}
 
+	void StartGame()
+	{
+		gameStarted = true;
+	}
+
 	bool GetRoomJoined() { return roomJoined; }
+	bool GetGameStarted() { return gameStarted; }
 
 private:
 	LobbyManager() = default;

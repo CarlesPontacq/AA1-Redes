@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "LoginScene.h"
 #include "LobbyScene.h"
+#include "LobbyWaitingScene.h"
 #include <string>
 #include "User.h"
 #include "config.h"
@@ -39,6 +40,7 @@ public:
 		scenes["Game"] = new GameScene();
 		scenes["Login"] = new LoginScene();
 		scenes["Lobby"] = new LobbyScene();
+		scenes["LobbyWait"] = new LobbyWaitingScene();
 		curScene = scenes["Login"];
 		curScene->enter(sharedMemory);
 	}
