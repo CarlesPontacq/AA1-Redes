@@ -115,14 +115,15 @@ bool Database::RegisterUser(const std::string& nickname, const std::string& pass
         }
 
         // Insert ranking
-        std::string insertRankingQuery = "INSERT INTO rankings (user_id, points, wins, losses, draws) VALUES (?, ?, ?, ?, ?)";
+        std::string insertRankingQuery = "INSERT INTO rankings (user_id, nickname, points, wins, losses, draws) VALUES (?, ?, ?, ?, ?, ?)";
         sql::PreparedStatement* stmtRanking = con->prepareStatement(insertRankingQuery);
 
         stmtRanking->setInt(1, userId);
-        stmtRanking->setInt(2, newUserPoints);
-        stmtRanking->setInt(3, 0);
+        stmtRanking->setString(2, nickname);
+        stmtRanking->setInt(3, newUserPoints);
         stmtRanking->setInt(4, 0);
         stmtRanking->setInt(5, 0);
+        stmtRanking->setInt(6, 0);
 
         int rankingRows = stmtRanking->executeUpdate();
         delete stmtRanking;
@@ -194,7 +195,7 @@ std::vector<Database::RankingEntry> Database::GetTop10Rankings(int userId)
 
     try
     {
-        std::string query = "SELECT user_id, points FROM rankings ORDER BY points DESC LIMIT 10";
+        std::string query = "SELECT user_id, points, nickname FROM rankings ORDER BY points DESC LIMIT 10";
 
         sql::PreparedStatement* stmt = con->prepareStatement(query);
         sql::ResultSet* res = stmt->executeQuery();
@@ -206,6 +207,7 @@ std::vector<Database::RankingEntry> Database::GetTop10Rankings(int userId)
             entry.position = position;
             entry.userId = res->getInt("user_id");
             entry.points = res->getInt("points");
+            entry.username = res->getInt("nickname");
 
             top10.push_back(entry);
             position++;

@@ -26,6 +26,7 @@ private:
         int position;
         int userId;
         int points;
+        std::string username;
     };
 
 public:

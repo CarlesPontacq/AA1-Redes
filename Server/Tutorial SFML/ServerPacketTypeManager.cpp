@@ -217,7 +217,11 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSo
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 {
+	int playerId;
 
+	data >> playerId;
+
+	DB->GetTop10Rankings(playerId);
 }
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS rankings (
     user_id INT PRIMARY KEY,
+    nickname VARCHAR(30),
     points INT,
     wins INT,
     losses INT,
