@@ -1,14 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Object.h"
+#include "SharedMemory.h"
 
 class Scene
 {
 public:
-
 	std::string nextScene = "";
 
-	virtual void enter() {}
+	virtual void enter(SharedMemory* _sharedMemory) {}
 	virtual void exit() {
 		while (!objects.empty()) {
 			Object* obj = objects.back();
@@ -32,6 +32,7 @@ public:
 
 protected:
 
+	SharedMemory* sharedMemory;
 	std::vector<Object*> objects;
 
 	virtual void render(sf::RenderWindow& window) {

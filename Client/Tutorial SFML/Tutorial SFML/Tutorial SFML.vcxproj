@@ -152,6 +152,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ServerPacketTypesManager.cpp" />
+    <ClCompile Include="SharedMemory.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ServerPacketTypesManager.h" />
+    <ClInclude Include="SharedMemory.h" />
     <ClInclude Include="style.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>

@@ -23,7 +23,7 @@ public:
 public:
 	PlayerManager() {}
 
-	PlayerManager(User _user, User _otherUsers[PLAYER_COUNT - 1], sf::Font& font) : user(_user) {
+	PlayerManager(User _user, std::vector<User> _otherUsers, sf::Font& font) : user(_user) {
 
 		for (int i = 0; i < PLAYER_COUNT; ++i)
 			winners.push_back(false);
