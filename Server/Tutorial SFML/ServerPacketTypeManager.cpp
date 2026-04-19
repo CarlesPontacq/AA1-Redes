@@ -115,25 +115,17 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	data >> loginUsername;
 	data >> loginPassword;
 
-	//Desencripta
+	int userId = 0;
 
-	bool correctLogin = true;
-	//Funcion para comprobar si el login es correcto segun la base de datos (Que devuelva un booleano)
-
-	// Si es correcto, guardar también los datos del usuario (nombre y puntos del ranking)
-
-	if (correctLogin) {
-		std::cout << "Login correcto de: " << loginUsername << ", pasando a la siguiente escena" << std::endl;
-		
-		MM->AddConnectedPlayer(&client, loginUsername, 15);
-
-		//Pasar a la siguiente escena
-	}
-	else {
-		std::cout << "Login incorrecto, la contraseya o el usuario estan mal" << std::endl;
-	}
+	bool correctLogin = DB->LoginUser(loginUsername, loginPassword, userId);
 
 	SendLoginResponse(client, correctLogin, loginUsername);
+
+	// Si es correcto, guardar tambiï¿½n los datos del usuario (nombre y puntos del ranking)
+	if (correctLogin) {
+		MM->AddConnectedPlayer(&client, loginUsername, 15);
+		//Pasar a la siguiente escena
+	}
 }
 
 void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client)
@@ -144,20 +136,15 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	data >> registerUsername;
 	data >> registerPassword;
 
-	//Desencripta
-
-	bool correctRegister = true;
-	//Funcion para comprobar si el registro es correcto, y si lo es que lo ejecute (Que devuelva un booleano)
-
-	if (correctRegister) {
-		std::cout << "Registro completado exitosamente" << std::endl;
-		//Pasar a la siguiente escena
-	}
-	else {
-		std::cout << "Registro incorrecto, la contraseya o el usuario no cumplen los requisistos" << std::endl;
-	}
+	std::string passwordHash = bcrypt::generateHash(registerPassword);
+	
+	bool correctRegister = DB->RegisterUser(registerUsername, passwordHash);
 
 	SendRegisterResponse(client, correctRegister, registerUsername);
+
+	if (correctRegister) {
+		//Pasar a la siguiente escena
+	}
 }
 
 void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
@@ -171,7 +158,7 @@ void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
 	//Funcion para comprobar si el ID esta disponible
 	 
 	if (lobbyIDIsAvailable) {
-		//Añadir el jugador en el lobby
+		//Aï¿½adir el jugador en el lobby
 		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
 		//Pasar a la siguiente escena o espera
 	}
@@ -191,7 +178,7 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
 	//Funcion para comprobar si la sala existe o si esta vacia
 
 	if (lobbyIsAvailable) {
-		//Añadir el jugador en el lobby
+		//Aï¿½adir el jugador en el lobby
 		std::cout << "Te has unido al lobby exitosamente" << std::endl;
 		//Pasar a la siguiente escena o espera
 	}

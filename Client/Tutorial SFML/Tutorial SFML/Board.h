@@ -5,14 +5,17 @@
 #include "Cell.h"
 #include "config.h"
 #include "style.h"
+#include "Object.h"
+#include "PlayerManager.h"
 
-class Board
+class Board : public Object
 {		
+	PlayerManager* playerManager;
 	std::vector<std::vector<Cell>> cells;
 
 public:
 
-	Board() {
+	Board(PlayerManager* _playerManager) : playerManager(_playerManager) {
 		cells = std::vector<std::vector<Cell>>();
 		for (int i = 0; i < BOARD_HEIGHT; ++i) {
 			cells.push_back(std::vector<Cell>());
@@ -20,7 +23,7 @@ public:
 		}
 	}
 
-	void render(sf::RenderWindow& window) {
+	void render(sf::RenderWindow& window) override {
 		//TODO: Render with nicer visuals
 		sf::RectangleShape square;
 		square.setSize({ boardSideLength, boardSideLength });
@@ -46,6 +49,21 @@ public:
 		}
 	}
 
+	void handleEvent(const sf::Event& event) override {
+		if (const sf::Event::MouseButtonPressed* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+
+			switch (mousePressed->button)
+			{
+			case sf::Mouse::Button::Left:
+				playTurn(mousePressed->position.x, mousePressed->position.y);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+private:
 	inline bool validClickPos(int posX, int posY) {
 		return
 			WINDOW_WIDTH * boardAnchorX <= posX &&
@@ -97,6 +115,21 @@ private:
 
 	inline bool validCell(int row, int column) {
 		return row >= 0 && row < BOARD_HEIGHT && column >= 0 && column < BOARD_WIDTH;
+	}
+
+	void playTurn(int posX, int posY) {
+		if (!validClickPos(posX, posY)) return;
+
+		int row = screenToBoardY(posY);
+		int column = screenToBoardX(posX);
+
+		if (!setCell(row, column, playerManager->currentPlayer))
+			return;
+
+		if (checkWin(row, column))
+			playerManager->winners[playerManager->currentPlayer] = true;
+
+		playerManager->nextPlayer();
 	}
 };
 
