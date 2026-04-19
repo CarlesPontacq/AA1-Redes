@@ -28,6 +28,8 @@ public:
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
 	sf::TcpSocket* GetServerSocket();
+	void SendLoginAttemptServerPacket(std::string username, std::string password);
+	void SendRegisterAttemptServerPacket(std::string username, std::string password);
 
 private:
 	NetworkManager() = default;
