@@ -1,9 +1,9 @@
 #pragma once
 #include "Scene.h"
-#include "GameManager.h"
 #include "Button.h"
 #include "NetworkManager.h"
 #include "LoginStyle.h"
+#include "InputField.h"
 
 class LoginScene : public Scene
 {

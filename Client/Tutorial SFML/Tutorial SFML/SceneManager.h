@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "Scene.h"
-#include "GameManager.h"
+#include "GameScene.h"
 #include "LoginScene.h"
 #include "LobbyScene.h"
 #include <string>
@@ -39,7 +39,7 @@ public:
 		scenes[SceneOption::GAME] = new GameScene();
 		scenes[SceneOption::LOGIN] = new LoginScene();
 		scenes[SceneOption::LOBBY] = new LobbyScene();
-		curScene = scenes[SceneOption::LOGIN];
+		curScene = scenes[SceneOption::GAME];
 		curScene->enter(sharedMemory);
 	}
 
