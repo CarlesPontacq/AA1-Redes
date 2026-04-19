@@ -46,6 +46,16 @@ void NetworkManager::SendRegisterAttemptServerPacket(std::string username, std::
     SPTM->SendRegisterAttempt(username, password, socket);
 }
 
+void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)
+{
+    SPTM->SendLobbyCreateAttempt(lobbyId, socket);
+}
+
+void NetworkManager::SendLobbyJoinAttemptPacket(std::string lobbyId)
+{
+    SPTM->SendLobbyJoinAttempt(lobbyId, socket);
+}
+
 void NetworkManager::HandleReceivedPackets()
 {
     sf::Packet receivePacket;

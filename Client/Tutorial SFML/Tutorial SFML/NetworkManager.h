@@ -34,6 +34,8 @@ public:
 	sf::TcpSocket* GetServerSocket();
 	void SendLoginAttemptServerPacket(std::string username, std::string password);
 	void SendRegisterAttemptServerPacket(std::string username, std::string password);
+	void SendLobbyCreateAttemptPacket(std::string lobbyId);
+	void SendLobbyJoinAttemptPacket(std::string lobbyId);
 
 private:
 	NetworkManager() = default;

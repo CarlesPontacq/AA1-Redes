@@ -39,7 +39,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 		ReceiveLobbyCreatePacket(packet, client);
 		break;
 	case PacketTypes::LOBBY_JOIN:
-		ReceiveLobbyJoinPacket(packet);
+		ReceiveLobbyJoinPacket(packet, client);
 		break;
 	case PacketTypes::RANKING:
 		ReceiveRankingPacket(packet);
@@ -99,6 +99,28 @@ void ServerPacketTypesManager::SendRegisterResponse(sf::TcpSocket& client, bool 
 	std::cout << "Respuesta de registro enviada" << std::endl;
 }
 
+void ServerPacketTypesManager::SendLobbyCreateResponse(sf::TcpSocket& client, bool success)
+{
+	sf::Packet packet;
+	packet << PacketTypes::LOBBY_CREATE;
+	packet << success;
+
+	SendData(client, packet);
+
+	std::cout << "Respuesta de creacion de lobby enviada" << std::endl;
+}
+
+void ServerPacketTypesManager::SendLobbyJoinResponse(sf::TcpSocket& client, bool success)
+{
+	sf::Packet packet;
+	packet << PacketTypes::LOBBY_JOIN;
+	packet << success;
+
+	SendData(client, packet);
+
+	std::cout << "Respuesta de join a lobby enviada" << std::endl;
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -154,38 +176,34 @@ void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data, sf::Tcp
 
 	data >> lobbyID;
 
-	bool lobbyIDIsAvailable = false;
-
 	bool successfulLobbyCreation = MM->CreateWaitingRoom(lobbyID, &client);
 	 
 	if (successfulLobbyCreation) {
-		//A�adir el jugador en el lobby
-		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
-		//Pasar a la siguiente escena o espera
+		std::cout << "Lobby " << lobbyID << "creado exitosamente, pasando jugador a la sala de espera" << std::endl;
 	}
 	else {
-		std::cout << "El ID " << lobbyID << " no esta disponible ahora mismo, prueba uno diferente" << std::endl;
+		std::cout << "El ID " << lobbyID << " ya esta en uso" << std::endl;
 	}
+
+	SendLobbyCreateResponse(client, successfulLobbyCreation);
 }
 
-void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
+void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSocket& client)
 {
 	std::string lobbyID;
 
 	data >> lobbyID;
 
-	bool lobbyIsAvailable = false;
+	bool successfulLobbyJoin = MM->JoinWaitingRoom(lobbyID, &client);
 
-	//Funcion para comprobar si la sala existe o si esta vacia
-
-	if (lobbyIsAvailable) {
-		//A�adir el jugador en el lobby
-		std::cout << "Te has unido al lobby exitosamente" << std::endl;
-		//Pasar a la siguiente escena o espera
+	if (successfulLobbyJoin) {
+		std::cout << "Jugador se ha unido a lobby con ID: " << lobbyID << std::endl;
 	}
 	else {
 		std::cout << "El lobby " << lobbyID << " esta lleno o no existe" << std::endl;
 	}
+
+	SendLobbyJoinResponse(client, successfulLobbyJoin);
 }
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)

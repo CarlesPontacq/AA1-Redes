@@ -5,6 +5,7 @@
 #include "Button.h"
 #include "ServerPacketTypesManager.h"
 #include "NetworkManager.h"
+#include "LobbyManager.h"
 #include <iostream>
 
 class LobbyScene : public Scene
@@ -30,8 +31,7 @@ public:
 		createRect.setPosition({ WINDOW_WIDTH * 0.29f, WINDOW_HEIGHT * 0.5f });
 		createRect.setFillColor(sf::Color::Red);
 		Button* createButton = new Button(createRect, sf::Text(*arial, "Create lobby"), [lobbyField]() {
-			SPTM->SendLobbyCreateAttempt(lobbyField->realStr, *NT->GetServerSocket());
-			std::cout << "Lobby creada con id: " << lobbyField->realStr;
+			NT->SendLobbyCreateAttemptPacket(lobbyField->realStr);
 			});
 
 		objects.push_back(createButton);
@@ -41,9 +41,19 @@ public:
 		joinRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
 		joinRect.setPosition({ WINDOW_WIDTH * 0.51f, WINDOW_HEIGHT * 0.5f });
 		joinRect.setFillColor(sf::Color::Red);
-		Button* joinButton = new Button(joinRect, sf::Text(*arial, "Join lobby"), [&]() { this->nextScene = "Game"; });
+		Button* joinButton = new Button(joinRect, sf::Text(*arial, "Join lobby"), [lobbyField]() {
+			NT->SendLobbyJoinAttemptPacket(lobbyField->realStr);
+			});
 
 		objects.push_back(joinButton);
+	}
+
+	bool update(sf::RenderWindow& window) override
+	{
+		if (LM->GetRoomJoined())
+			nextScene = "Game";
+
+		return Scene::update(window);
 	}
 };
 

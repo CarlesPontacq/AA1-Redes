@@ -49,7 +49,6 @@ public:
 		registerRect.setPosition({ WINDOW_WIDTH * 0.5f - registerRect.getSize().x / 2, WINDOW_HEIGHT * 0.7f });
 		registerRect.setFillColor(sf::Color::Red);
 		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [nicknameField, passwordField]() {
-			//this->nextScene = "Lobby";
 			NT->SendRegisterAttemptServerPacket(nicknameField->realStr, passwordField->realStr);
 			});
 
