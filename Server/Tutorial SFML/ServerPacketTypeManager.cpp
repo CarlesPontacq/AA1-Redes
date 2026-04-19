@@ -75,6 +75,15 @@ void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& client)
 	SendData(client, packet);
 }
 
+void ServerPacketTypesManager::SendUpdatedPlayerCount(sf::TcpSocket& client, int playerCount)
+{
+	sf::Packet packet;
+	packet << PacketTypes::WAITING_ROOM_PLAYERS;
+	packet << playerCount;
+
+	SendData(client, packet);
+}
+
 void ServerPacketTypesManager::SendLoginResponse(sf::TcpSocket& client, bool success, const std::string& username)
 {
 	sf::Packet packet;
@@ -194,6 +203,7 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSo
 
 	data >> lobbyID;
 
+	std::cout << "Servidor recibe join packet" << std::endl;
 	bool successfulLobbyJoin = MM->JoinWaitingRoom(lobbyID, &client);
 
 	if (successfulLobbyJoin) {

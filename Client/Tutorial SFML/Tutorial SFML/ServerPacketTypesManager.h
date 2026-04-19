@@ -7,7 +7,7 @@
 
 enum PacketTypes
 {
-	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, WAITING_ROOM_PLAYERS, RANKING, START_GAME, END_GAME
 };
 
 class ServerPacketTypesManager
@@ -44,6 +44,7 @@ private:
 	void ReceiveHandshakePacket(sf::Packet data);
 	void ReceiveLobbyCreatePacket(sf::Packet data);
 	void ReceiveLobbyJoinPacket(sf::Packet data);
+	void ReceivePlayerCountPacket(sf::Packet data);
 	void ReceiveRankingPacket(sf::Packet data);
 	void ReceiveStartGamePacket(sf::Packet data);
 	void ReceiveEndGamePacket(sf::Packet data);

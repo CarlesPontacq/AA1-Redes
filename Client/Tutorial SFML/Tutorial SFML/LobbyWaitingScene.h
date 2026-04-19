@@ -13,6 +13,8 @@ class LobbyWaitingScene : public Scene
 	sf::Font* arial;
 
 	std::string id = "e";
+	int playerCount = 1;
+	Button* playerAmountText;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
@@ -33,7 +35,8 @@ public:
 		playerAmountRect.setSize({ WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.15f });
 		playerAmountRect.setPosition({ WINDOW_WIDTH * 0.5f - playerAmountRect.getSize().x/2.f, WINDOW_HEIGHT * 0.5f});
 		playerAmountRect.setFillColor(sf::Color::Transparent);
-		Button* playerAmountText = new Button(playerAmountRect, sf::Text(*arial, "1/4"), []() {});
+		std::string playerCountText = std::to_string(playerCount) + "/4";
+		playerAmountText = new Button(playerAmountRect, sf::Text(*arial, playerCountText), []() {});
 
 		objects.push_back(playerAmountText);
 	}
@@ -41,7 +44,14 @@ public:
 	bool update(sf::RenderWindow& window) override
 	{
 		if (LM->GetGameStarted())
-			nextScene = "Game";
+			nextScene = SceneOption::GAME;
+
+		if (LM->GetUpdatedPlayerCount() != playerCount)
+		{
+			playerCount = LM->GetUpdatedPlayerCount();
+			std::string playerCountText = std::to_string(playerCount) + "/4";
+			playerAmountText->label.setString(playerCountText);
+		}
 
 		return Scene::update(window);
 	}

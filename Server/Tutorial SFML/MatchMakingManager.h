@@ -19,6 +19,7 @@ private:
 
 	bool IsAvailableRoomId(std::string roomId);	
 	Player* GetPlayer(sf::TcpSocket* playerClient);
+	GameRoom* GetGameInfo(std::string roomId);
 
 public:
 	void AddConnectedPlayer(sf::TcpSocket* playerClient, std::string username, int playerPoints);

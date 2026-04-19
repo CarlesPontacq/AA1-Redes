@@ -52,7 +52,7 @@ public:
 	bool update(sf::RenderWindow& window) override
 	{
 		if (LM->GetRoomJoined())
-			nextScene = SceneOption::GAME;
+			nextScene = SceneOption::WAITING_ROOM;
 
 		return Scene::update(window);
 	}

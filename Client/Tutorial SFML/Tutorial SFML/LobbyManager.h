@@ -13,6 +13,7 @@ public:
 private:
 	bool roomJoined = false;
 	bool gameStarted = false;
+	int playerCount = 1;
 
 public:
 	void JoinRoom()
@@ -27,6 +28,11 @@ public:
 
 	bool GetRoomJoined() { return roomJoined; }
 	bool GetGameStarted() { return gameStarted; }
+	void UpdatePlayerCount(int newPlayerCount)
+	{
+		playerCount = newPlayerCount;
+	}
+	int GetUpdatedPlayerCount() { return playerCount; }
 
 private:
 	LobbyManager() = default;

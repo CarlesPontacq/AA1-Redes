@@ -1,4 +1,5 @@
 #include "MatchMakingManager.h"
+#include "NetworkManager.h"
 #include <iostream>
 
 bool MatchMakingManager::IsAvailableRoomId(std::string roomId)
@@ -17,6 +18,17 @@ Player* MatchMakingManager::GetPlayer(sf::TcpSocket* playerClient)
 	{
 		if (playerClient == connectedPlayers[i].client)
 			return &connectedPlayers[i];
+	}
+
+	return nullptr;
+}
+
+GameRoom* MatchMakingManager::GetGameInfo(std::string roomId)
+{
+	for (int i = 0; i < waitingRooms.size(); i++)
+	{
+		if (roomId == waitingRooms[i].GetId())
+			return &waitingRooms[i];
 	}
 
 	return nullptr;
@@ -55,8 +67,19 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 		if (roomId == waitingRooms[i].GetId())
 		{
 			if (waitingRooms[i].IsFull()) return false;
-
+			std::cout << "Es waiting room " << i << std::endl;
 			waitingRooms[i].AddPlayer(*GetPlayer(playerClient));
+
+
+			int playerCount = i + 1;
+			std::cout << "Matchmaking detecta que la player count es " << playerCount << std::endl;
+			for (int j = i - 1; j >= 0; j--)
+			{
+				sf::TcpSocket* currentClient = waitingRooms[i].GetPlayer(j)->client;
+				SPTM->SendUpdatedPlayerCount(*currentClient, playerCount);
+				std::cout << "Matchmaking ha enviado mensaje al cliente " << j << " de la sala " << std::endl;
+			}
+
 			return true;
 		}
 	}

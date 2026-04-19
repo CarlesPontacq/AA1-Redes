@@ -14,6 +14,7 @@ enum class SceneOption {
 	NONE,
 	LOGIN,
 	LOBBY,
+	WAITING_ROOM,
 	GAME,
 	RANKING
 };
