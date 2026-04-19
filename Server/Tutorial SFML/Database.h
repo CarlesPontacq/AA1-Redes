@@ -21,20 +21,19 @@
 
 class Database
 {
-private:
-    struct RankingEntry {
-        int position;
-        int userId;
-        int points;
-        std::string username;
-    };
-
 public:
     static Database* Instance() {
         static Database db;
 
         return &db;
     }
+
+    struct RankingEntry {
+        int position;
+        int userId;
+        int points;
+        std::string username;
+    };
 
     bool Connect();
     void Disconnect();

@@ -207,7 +207,7 @@ std::vector<Database::RankingEntry> Database::GetTop10Rankings(int userId)
             entry.position = position;
             entry.userId = res->getInt("user_id");
             entry.points = res->getInt("points");
-            entry.username = res->getInt("nickname");
+            entry.username = res->getString("nickname");
 
             top10.push_back(entry);
             position++;

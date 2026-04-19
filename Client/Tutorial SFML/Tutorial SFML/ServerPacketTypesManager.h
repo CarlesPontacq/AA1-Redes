@@ -29,6 +29,7 @@ public:
 	void SendRegisterAttempt(std::string username, std::string password, sf::TcpSocket& server);
 	void SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server);
+	void SendRankingPetition(int userId, sf::TcpSocket& server);
 
 private:
 	ServerPacketTypesManager() = default;
