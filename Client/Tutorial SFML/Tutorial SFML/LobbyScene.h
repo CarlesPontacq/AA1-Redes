@@ -10,7 +10,7 @@ class LobbyScene : public Scene
 	sf::Font* arial;
 
 public:
-	void enter() override {
+	void enter(SharedMemory* _sharedMemory) override {
 		arial = new sf::Font("arial.ttf");
 
 		//Lobby

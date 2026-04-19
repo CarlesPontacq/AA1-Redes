@@ -9,7 +9,8 @@ class LoginScene : public Scene
 	sf::Font* arial;
 
 public:
-	void enter() override {
+	void enter(SharedMemory* _sharedMemory) override {
+		sharedMemory = _sharedMemory;
 		arial = new sf::Font("arial.ttf");
 
 		//Nickname
