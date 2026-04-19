@@ -1,4 +1,6 @@
 #include "ServerPacketTypesManager.h"
+#include "NetworkManager.h"
+#include "LobbyManager.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -33,7 +35,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 	case PacketTypes::REGISTER:
 		ReceiveRegisterPacket(packet);
 		break;
-	case PacketTypes::LOOBY_CREATE:
+	case PacketTypes::LOBBY_CREATE:
 		ReceiveLobbyCreatePacket(packet);
 		break;
 	case PacketTypes::LOBBY_JOIN:
@@ -91,6 +93,26 @@ void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::st
 	SendData(server, packet);
 }
 
+void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::LOBBY_CREATE;
+	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::LOBBY_JOIN;
+	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -108,6 +130,7 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data)
 
 	if (success) {
 		std::cout << "Login correcto! Bienvenido " << username << std::endl;
+		NT->SetSuccessfulLogin(true);
 	}
 	else {
 		std::cout << "Login incorrecto" << std::endl;
@@ -124,6 +147,7 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 
 	if (success) {
 		std::cout << "Registro correcto! Usuario " << username << " creado" << std::endl;
+		NT->SetSuccessfulLogin(true);
 	}
 	else {
 		std::cout << "Registro fallido " << std::endl;
@@ -132,21 +156,18 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
 {
-	std::string lobbyID;
+	bool success;
 
-	data >> lobbyID;
+	data >> success;
 
-	bool lobbyIDIsAvailable = false;
-
-	//Funcion para comprobar si el ID esta disponible
+	bool lobbyIDIsAvailable = success;
 
 	if (lobbyIDIsAvailable) {
-		//Añadir el jugador en el lobby
 		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
-		//Pasar a la siguiente escena o espera
+		LM->JoinRoom();
 	}
 	else {
-		std::cout << "El ID " << lobbyID << " no esta disponible ahora mismo, prueba uno diferente" << std::endl;
+		std::cout << "Ese ID no esta disponible ahora mismo, prueba uno diferente" << std::endl;
 	}
 }
 
@@ -158,12 +179,9 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
 
 	bool lobbyIsAvailable = false;
 
-	//Funcion para comprobar si la sala existe o si esta vacia
-
 	if (lobbyIsAvailable) {
-		//Añadir el jugador en el lobby
 		std::cout << "Te has unido al lobby exitosamente" << std::endl;
-		//Pasar a la siguiente escena o espera
+		LM->JoinRoom();
 	}
 	else {
 		std::cout << "El lobby " << lobbyID << " esta lleno o no existe" << std::endl;

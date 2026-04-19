@@ -1,12 +1,15 @@
 #pragma once
 #include <SFML/Network.hpp>
+#include "Bcrypt/bcrypt.h"
+#include "Database.h"
+
 #include <string>
 
 #define SPTM ServerPacketTypesManager::Instance()
 
 enum PacketTypes
 {
-	HANDSHAKE, LOGIN, REGISTER, LOOBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
 };
 
 class ServerPacketTypesManager
@@ -35,15 +38,15 @@ private:
 
 	void SendLoginResponse(sf::TcpSocket& client, bool success, const std::string& message);
 	void SendRegisterResponse(sf::TcpSocket& client, bool success, const std::string& message);
+	void SendLobbyCreateResponse(sf::TcpSocket& client, bool success);
+	void SendLobbyJoinResponse(sf::TcpSocket& client, bool success);
 
 	void ReceiveHandshakePacket(sf::Packet data);
 	void ReceiveLoginPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client);
-	void ReceiveLobbyCreatePacket(sf::Packet data);
-	void ReceiveLobbyJoinPacket(sf::Packet data);
+	void ReceiveLobbyCreatePacket(sf::Packet data, sf::TcpSocket& client);
+	void ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveRankingPacket(sf::Packet data);
 	void ReceiveStartGamePacket(sf::Packet data);
 	void ReceiveEndGamePacket(sf::Packet data);
-
-
 };

@@ -121,7 +121,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>STATIC_CONCPP;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>STATIC_CONCPP;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)\Dependencies\include;$(SolutionDir)\Dependencies\mysqlConnector\include\jdbc</AdditionalIncludeDirectories>
@@ -136,14 +136,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bcrypt\bcrypt.cpp" />
+    <ClCompile Include="Bcrypt\blowfish.cpp" />
     <ClCompile Include="Database.cpp" />
+    <ClCompile Include="MatchMakingManager.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="ServerPacketTypeManager.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bcrypt\bcrypt.h" />
+    <ClInclude Include="Bcrypt\node_blf.h" />
+    <ClInclude Include="Bcrypt\openbsd.h" />
     <ClInclude Include="Database.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="MatchMakingManager.h" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="ServerPacketTypeManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

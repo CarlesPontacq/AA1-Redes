@@ -1,7 +1,5 @@
 #include "Database.h"
 
-
-
 Database::Database() : driver(nullptr), con(nullptr)
 {
 }
@@ -172,7 +170,7 @@ bool Database::LoginUser(const std::string& nickname, const std::string& passwor
         delete res;
         delete stmt;
 
-        if (dbPassword != password)
+        if (!bcrypt::validatePassword(password, dbPassword))
         {
             std::cout << "Login failed: wrong password." << std::endl;
             return false;

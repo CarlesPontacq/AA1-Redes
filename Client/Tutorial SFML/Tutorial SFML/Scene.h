@@ -1,12 +1,22 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Object.h"
+#include "SharedMemory.h"
+#include "config.h"
 
 class Scene
 {
 public:
+	SceneOption nextScene = SceneOption::NONE;
 
-	std::string nextScene = "";
+	virtual void enter(SharedMemory* _sharedMemory) {}
+	virtual void exit() {
+		while (!objects.empty()) {
+			Object* obj = objects.back();
+			delete obj;
+			objects.pop_back();
+		}
+	}
 
 	virtual bool update(sf::RenderWindow& window) {
 		if (!window.isOpen()) return false;
@@ -23,6 +33,7 @@ public:
 
 protected:
 
+	SharedMemory* sharedMemory;
 	std::vector<Object*> objects;
 
 	virtual void render(sf::RenderWindow& window) {

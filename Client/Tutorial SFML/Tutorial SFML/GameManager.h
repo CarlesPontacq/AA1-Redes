@@ -10,33 +10,37 @@
 class GameScene : public Scene
 {
 	User user;
-	User otherUsers[PLAYER_COUNT - 1];
+	std::vector<User> otherUsers;
 
-	sf::Font* arial;
-	InputField* inputField;
+	sf::Font* font;
 
 public:
+	void enter(SharedMemory* _sharedMemory) override {
+		sharedMemory = _sharedMemory;
 
-	GameScene(User _user, User _otherUsers[PLAYER_COUNT - 1]) :
-		user(_user), arial(new sf::Font("arial.ttf"))
-	{
-		PlayerManager* playerManager = new PlayerManager(_user, _otherUsers, *arial);
+		font = new sf::Font(FONT_PATH);
 
-		for (int i = 0; i < PLAYER_COUNT - 1; ++i) otherUsers[i] = _otherUsers[i];
+		User mainUser;
+		sharedMemory->getUser("user", mainUser);
+
+		std::vector<User> otherUsers;
+		for (int i = 0; i < PLAYER_COUNT; ++i) {
+			if (i == mainUser.userIndex) continue;
+
+			User user;
+			sharedMemory->getUser("user" + i, user);
+			otherUsers.push_back(user);
+		}
+
+		PlayerManager* playerManager = new PlayerManager(mainUser, otherUsers, *font);
 
 		Board* board = new Board(playerManager);
 
 		CountdownTimer* countdown = new CountdownTimer(playerManager);
 
-		sf::RectangleShape inputRect;
-		sf::Text inputText(*arial);
-		inputField = new InputField(inputRect, inputText);
-		inputField->isSelected = true;
-
 		objects.push_back(static_cast<Object*>(playerManager));
 		objects.push_back(static_cast<Object*>(board));
 		objects.push_back(static_cast<Object*>(countdown));
-		objects.push_back(static_cast<Object*>(inputField));
 	}
 };
 

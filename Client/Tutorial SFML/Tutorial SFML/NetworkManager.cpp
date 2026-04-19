@@ -24,8 +24,36 @@ void NetworkManager::Update()
 {
     if (!disconnectFromServer) {
         HandleReceivedPackets();
-        SendServerPacket();
+        //SendServerPacket();
     }
+}
+
+sf::TcpSocket* NetworkManager::GetServerSocket()
+{
+    if (!disconnectFromServer)
+        return &socket;
+    
+    return nullptr;
+}
+
+void NetworkManager::SendLoginAttemptServerPacket(std::string username, std::string password)
+{
+    SPTM->SendLoginAttempt(username, password, socket);
+}
+
+void NetworkManager::SendRegisterAttemptServerPacket(std::string username, std::string password)
+{
+    SPTM->SendRegisterAttempt(username, password, socket);
+}
+
+void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)
+{
+    SPTM->SendLobbyCreateAttempt(lobbyId, socket);
+}
+
+void NetworkManager::SendLobbyJoinAttemptPacket(std::string lobbyId)
+{
+    SPTM->SendLobbyJoinAttempt(lobbyId, socket);
 }
 
 void NetworkManager::HandleReceivedPackets()
