@@ -7,30 +7,31 @@
 #include "NetworkManager.h"
 #include "LobbyManager.h"
 #include <iostream>
+#include "LobbyStyle.h"
 
 class LobbyScene : public Scene
 {
-	sf::Font* arial;
+	sf::Font* font;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
-		arial = new sf::Font("arial.ttf");
+		font = new sf::Font(FONT_PATH);
 
 		//Room id input
 		sf::RectangleShape lobbyRect;
-		lobbyRect.setSize({ WINDOW_WIDTH * 0.3f, WINDOW_HEIGHT * 0.15f });
-		lobbyRect.setPosition({ WINDOW_WIDTH * 0.5f - lobbyRect.getSize().x / 2, WINDOW_HEIGHT * 0.3f});
-		lobbyRect.setFillColor(sf::Color::Blue);
-		InputField* lobbyField = new InputField(lobbyRect, sf::Text(*arial), 10);
+		lobbyRect.setSize(lobbyRectSize);
+		lobbyRect.setPosition({ WINDOW_WIDTH * lobbyRectAnchorX - lobbyRect.getSize().x / 2.0f, WINDOW_HEIGHT * lobbyRectAnchorY});
+		lobbyRect.setFillColor(lobbyRectColour);
+		InputField* lobbyField = new InputField(lobbyRect, sf::Text(*font), lobbyMaxChars);
 
 		objects.push_back(lobbyField);
 
 		//Create
 		sf::RectangleShape createRect;
-		createRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
-		createRect.setPosition({ WINDOW_WIDTH * 0.29f, WINDOW_HEIGHT * 0.5f });
-		createRect.setFillColor(sf::Color::Red);
-		Button* createButton = new Button(createRect, sf::Text(*arial, "Create lobby"), [lobbyField]() {
+		createRect.setSize(createRectSize);
+		createRect.setPosition({ WINDOW_WIDTH * createRectAnchorX, WINDOW_HEIGHT * createRectAnchorY });
+		createRect.setFillColor(createRectColour);
+		Button* createButton = new Button(createRect, sf::Text(*font, createButtonLabel), [lobbyField]() {
 			NT->SendLobbyCreateAttemptPacket(lobbyField->realStr);
 			});
 
@@ -38,10 +39,10 @@ public:
 
 		//Join
 		sf::RectangleShape joinRect;
-		joinRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
-		joinRect.setPosition({ WINDOW_WIDTH * 0.51f, WINDOW_HEIGHT * 0.5f });
-		joinRect.setFillColor(sf::Color::Red);
-		Button* joinButton = new Button(joinRect, sf::Text(*arial, "Join lobby"), [lobbyField]() {
+		joinRect.setSize(joinRectSize);
+		joinRect.setPosition({ WINDOW_WIDTH * joinRectAnchorX, WINDOW_HEIGHT * joinRectAnchorY });
+		joinRect.setFillColor(joinRectColour);
+		Button* joinButton = new Button(joinRect, sf::Text(*font, joinButtonLabel), [lobbyField]() {
 			NT->SendLobbyJoinAttemptPacket(lobbyField->realStr);
 			});
 
@@ -51,7 +52,7 @@ public:
 	bool update(sf::RenderWindow& window) override
 	{
 		if (LM->GetRoomJoined())
-			nextScene = "Game";
+			nextScene = SceneOption::GAME;
 
 		return Scene::update(window);
 	}

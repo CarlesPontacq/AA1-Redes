@@ -12,13 +12,13 @@ class GameScene : public Scene
 	User user;
 	std::vector<User> otherUsers;
 
-	sf::Font* arial;
+	sf::Font* font;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
 		sharedMemory = _sharedMemory;
 
-		arial = new sf::Font("arial.ttf");
+		font = new sf::Font(FONT_PATH);
 
 		User mainUser;
 		sharedMemory->getUser("user", mainUser);
@@ -32,7 +32,7 @@ public:
 			otherUsers.push_back(user);
 		}
 
-		PlayerManager* playerManager = new PlayerManager(mainUser, otherUsers, *arial);
+		PlayerManager* playerManager = new PlayerManager(mainUser, otherUsers, *font);
 
 		Board* board = new Board(playerManager);
 

@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Cell.h"
 #include "config.h"
-#include "style.h"
+#include "GameStyle.h"
 #include "Object.h"
 #include "PlayerManager.h"
 
@@ -24,7 +24,6 @@ public:
 	}
 
 	void render(sf::RenderWindow& window) override {
-		//TODO: Render with nicer visuals
 		sf::RectangleShape square;
 		square.setSize({ boardSideLength, boardSideLength });
 		square.setFillColor(sf::Color::Magenta);
@@ -101,8 +100,6 @@ private:
 
 		return false;
 	}
-
-private:
 
 	inline bool checkLine(int row1, int column1, int row2, int column2, int row3, int column3) {
 		if (!validCell(row1, column1) || !validCell(row2, column2) || !validCell(row3, column3))
