@@ -217,6 +217,7 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSo
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 {
+
 }
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
