@@ -3,41 +3,42 @@
 #include "GameManager.h"
 #include "Button.h"
 #include "NetworkManager.h"
+#include "LoginStyle.h"
 
 class LoginScene : public Scene
 {
-	sf::Font* arial;
+	sf::Font* font;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
 		sharedMemory = _sharedMemory;
-		arial = new sf::Font("arial.ttf");
+		font = new sf::Font(FONT_PATH);
 
 		//Nickname
 		sf::RectangleShape nicknameRect;
-		nicknameRect.setSize({ WINDOW_WIDTH * 0.3f, WINDOW_HEIGHT * 0.15f });
-		nicknameRect.setPosition({ WINDOW_WIDTH * 0.5f - nicknameRect.getSize().x / 2, WINDOW_HEIGHT * 0.1f });
-		nicknameRect.setFillColor(sf::Color::Red);
-		InputField* nicknameField = new InputField(nicknameRect, sf::Text(*arial), 10);
+		nicknameRect.setSize(nicknameRectSize);
+		nicknameRect.setPosition({ WINDOW_WIDTH * nicknameRectAnchorX - nicknameRect.getSize().x / 2, WINDOW_HEIGHT * nicknameRectAnchorY });
+		nicknameRect.setFillColor(nicknameRectColour);
+		InputField* nicknameField = new InputField(nicknameRect, sf::Text(*font), nicknameMaxChars);
 
 		objects.push_back(nicknameField);
 
 		//Password
 		sf::RectangleShape passwordRect;
-		passwordRect.setSize({ WINDOW_WIDTH * 0.3f, WINDOW_HEIGHT * 0.15f });
-		passwordRect.setPosition({ WINDOW_WIDTH * 0.5f - passwordRect.getSize().x / 2, WINDOW_HEIGHT * 0.3f });
-		passwordRect.setFillColor(sf::Color::Red);
-		InputField* passwordField = new InputField(passwordRect, sf::Text(*arial), 10);
+		passwordRect.setSize(passwordRectSize);
+		passwordRect.setPosition({ WINDOW_WIDTH * passwordRectAnchorX - passwordRect.getSize().x / 2, WINDOW_HEIGHT * passwordRectAnchorY });
+		passwordRect.setFillColor(passwordRectColour);
+		InputField* passwordField = new InputField(passwordRect, sf::Text(*font), passwordMaxChars);
 		passwordField->isCensored = true;
 
 		objects.push_back(passwordField);
 
 		//Login
 		sf::RectangleShape loginRect;
-		loginRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
-		loginRect.setPosition({ WINDOW_WIDTH * 0.5f - loginRect.getSize().x / 2, WINDOW_HEIGHT * 0.5f });
-		loginRect.setFillColor(sf::Color::Red);
-		Button* loginButton = new Button(loginRect, sf::Text(*arial, "Login"), [nicknameField, passwordField]() {
+		loginRect.setSize(loginRectSize);
+		loginRect.setPosition({ WINDOW_WIDTH * loginRectAnchorX - loginRect.getSize().x / 2, WINDOW_HEIGHT * loginRectAnchorY });
+		loginRect.setFillColor(loginRectColour);
+		Button* loginButton = new Button(loginRect, sf::Text(*font, loginButtonLabel), [nicknameField, passwordField]() {
 			NT->SendLoginAttemptServerPacket(nicknameField->realStr, passwordField->realStr);
 			});
 
@@ -45,10 +46,10 @@ public:
 
 		//Register
 		sf::RectangleShape registerRect;
-		registerRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
-		registerRect.setPosition({ WINDOW_WIDTH * 0.5f - registerRect.getSize().x / 2, WINDOW_HEIGHT * 0.7f });
-		registerRect.setFillColor(sf::Color::Red);
-		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [nicknameField, passwordField]() {
+		registerRect.setSize(registerRectSize);
+		registerRect.setPosition({ WINDOW_WIDTH * registerRectAnchorX - registerRect.getSize().x / 2, WINDOW_HEIGHT * registerRectAnchorY });
+		registerRect.setFillColor(registerRectColour);
+		Button* registerButton = new Button(registerRect, sf::Text(*font, registerButtonLabel), [nicknameField, passwordField]() {
 			//this->nextScene = "Lobby";
 			NT->SendRegisterAttemptServerPacket(nicknameField->realStr, passwordField->realStr);
 			});
@@ -59,7 +60,7 @@ public:
 	bool update(sf::RenderWindow& window) override
 	{
 		if (NT->GetSuccessfulLogin())
-			nextScene = "Lobby";
+			nextScene = SceneOption::LOBBY;
 
 		return Scene::update(window);
 	}

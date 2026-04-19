@@ -1,5 +1,5 @@
 #pragma once
-#include "style.h"
+#include "GameStyle.h"
 #include "User.h"
 #include <SFML/Graphics.hpp>
 
@@ -16,13 +16,19 @@ struct Player
 			WINDOW_WIDTH * playersAnchorX,
 			WINDOW_HEIGHT * playersAnchorY + user.userIndex * (playersHeight + playersSeparation)
 			});
-		rectangle.setFillColor(sf::Color::Cyan);
+		rectangle.setFillColor(playersBackground);
 		rectangle.setSize({ playersWidth, playersHeight });
 
 		nick.setString(user.nickname);
-		nick.setPosition(rectangle.getPosition() + sf::Vector2f{rectangle.getSize().x * 0.2f, rectangle.getSize().y / 5});
-		nick.setCharacterSize(40);
-		nick.setStyle(sf::Text::Regular);
+
+		//Center text
+		nick.setPosition({
+			rectangle.getPosition().x + rectangle.getSize().x / 2.0f - nick.getCharacterSize() / 2.0f * nick.getString().getSize() / 2.0f,
+			rectangle.getPosition().y + rectangle.getSize().y / 2.0f - nick.getCharacterSize() / 2.0f
+			});
+
+		nick.setCharacterSize(playersCharacterSize);
+		nick.setStyle(playersTextStyle);
 	}
 };
 
