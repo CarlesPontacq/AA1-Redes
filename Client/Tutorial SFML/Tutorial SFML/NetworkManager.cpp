@@ -46,6 +46,11 @@ void NetworkManager::SendRegisterAttemptServerPacket(std::string username, std::
     SPTM->SendRegisterAttempt(username, password, socket);
 }
 
+void NetworkManager::SendRankingPetitionServerPacket(int userId)
+{
+    SPTM->SendRankingPetition(userId, socket);
+}
+
 void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)
 {
     SPTM->SendLobbyCreateAttempt(lobbyId, socket);
