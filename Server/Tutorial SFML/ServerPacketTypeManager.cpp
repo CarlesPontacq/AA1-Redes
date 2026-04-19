@@ -42,7 +42,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 		ReceiveLobbyJoinPacket(packet, client);
 		break;
 	case PacketTypes::RANKING:
-		ReceiveRankingPacket(packet);
+		ReceiveRankingPacket(packet, client);
 		break;
 	case PacketTypes::START_GAME:
 		ReceiveStartGamePacket(packet);
@@ -160,6 +160,29 @@ void ServerPacketTypesManager::SendLobbyJoinResponse(sf::TcpSocket& client, bool
 	std::cout << "Respuesta de join a lobby enviada" << std::endl;
 }
 
+void ServerPacketTypesManager::SendRankingPacket(sf::TcpSocket& client, std::vector<Database::RankingEntry>& rankings)
+{
+	sf::Packet packet;
+	packet << PacketTypes::RANKING;
+
+	packet << static_cast<int>(rankings.size());
+
+	for (const auto& entry : rankings) {
+		packet << entry.position;
+		packet << entry.userId;
+		packet << entry.username;
+		packet << entry.points;
+
+		
+		std::cout << entry.position << ". " << entry.userId << " - "
+			<< entry.username << " - "
+			<< entry.points << " puntos" << std::endl;
+	}
+
+	SendData(client, packet);
+	std::cout << "Ranking packet enviado con " << rankings.size() << " entradas." << std::endl;
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -245,8 +268,17 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSo
 	SendLobbyJoinResponse(client, successfulLobbyJoin);
 }
 
-void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
+void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data, sf::TcpSocket& client)
 {
+	int playerId;
+
+	data >> playerId;
+
+	std::cout << "Recibida peticion de ranking para el jugador ID: " << playerId << std::endl;
+
+	std::vector<Database::RankingEntry> topRankings = DB->GetTop10Rankings(playerId);
+
+	SendRankingPacket(client, topRankings);
 }
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)

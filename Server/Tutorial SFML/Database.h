@@ -10,10 +10,11 @@
 #include <cppconn/resultset.h>
 
 #include "Bcrypt/bcrypt.h"
+#include <vector>
 
 #define SERVER "127.0.0.1:3306"
 #define USERNAME "root"
-#define PASSWORD ""
+#define PASSWORD "enti"
 #define DATABASE "tres_en_raya_online"
 
 #define DB Database::Instance()
@@ -27,19 +28,32 @@ public:
         return &db;
     }
 
+    struct RankingEntry {
+        int position;
+        int userId;
+        int points;
+        std::string username;
+    };
+
     bool Connect();
     void Disconnect();
 
     bool RegisterUser(const std::string& nickname, const std::string& password);
     bool LoginUser(const std::string& nickname, const std::string& password, int& userId);
 
+    std::vector<RankingEntry> GetTop10Rankings(int userId);
+
 private:
     sql::Driver* driver;
     sql::Connection* con;
+
+    int maxRankToShow = 10;
+    int newUserPoints = 10;
 
 private:
     Database();
     ~Database();
 
     bool UserExists(const std::string& nickname);
+    void UpdateRankingPositions();
 };

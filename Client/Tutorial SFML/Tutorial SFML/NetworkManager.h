@@ -36,6 +36,7 @@ public:
 	void SendRegisterAttemptServerPacket(std::string username, std::string password);
 	void SendLobbyCreateAttemptPacket(std::string lobbyId);
 	void SendLobbyJoinAttemptPacket(std::string lobbyId);
+	void SendRankingPetitionServerPacket(int userId);
 
 	void SendStartGameResponse(std::string lobbyId);
 

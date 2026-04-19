@@ -115,14 +115,15 @@ bool Database::RegisterUser(const std::string& nickname, const std::string& pass
         }
 
         // Insert ranking
-        std::string insertRankingQuery = "INSERT INTO rankings (user_id, points, wins, losses, draws) VALUES (?, ?, ?, ?, ?)";
+        std::string insertRankingQuery = "INSERT INTO rankings (user_id, nickname, points, wins, losses, draws) VALUES (?, ?, ?, ?, ?, ?)";
         sql::PreparedStatement* stmtRanking = con->prepareStatement(insertRankingQuery);
 
         stmtRanking->setInt(1, userId);
-        stmtRanking->setInt(2, 1000);
-        stmtRanking->setInt(3, 0);
+        stmtRanking->setString(2, nickname);
+        stmtRanking->setInt(3, newUserPoints);
         stmtRanking->setInt(4, 0);
         stmtRanking->setInt(5, 0);
+        stmtRanking->setInt(6, 0);
 
         int rankingRows = stmtRanking->executeUpdate();
         delete stmtRanking;
@@ -186,4 +187,41 @@ bool Database::LoginUser(const std::string& nickname, const std::string& passwor
         std::cout << "Error logging in: " << e.what() << std::endl;
         return false;
     }
+}
+
+std::vector<Database::RankingEntry> Database::GetTop10Rankings(int userId)
+{
+    std::vector<RankingEntry> top10;
+
+    try
+    {
+        std::string query = "SELECT user_id, points, nickname FROM rankings ORDER BY points DESC LIMIT 10";
+
+        sql::PreparedStatement* stmt = con->prepareStatement(query);
+        sql::ResultSet* res = stmt->executeQuery();
+
+        int position = 1;
+        while (res->next() && position <= 10)
+        {
+            RankingEntry entry;
+            entry.position = position;
+            entry.userId = res->getInt("user_id");
+            entry.points = res->getInt("points");
+            entry.username = res->getString("nickname");
+
+            top10.push_back(entry);
+            position++;
+        }
+
+        delete res;
+        delete stmt;
+
+        std::cout << "Recibido " << top10.size() << " puntuaciones." << std::endl;
+    }
+    catch (sql::SQLException& e)
+    {
+        std::cout << "Error consiguiendo top 10 rankings: " << e.what() << std::endl;
+    }
+
+    return top10;
 }

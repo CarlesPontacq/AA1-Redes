@@ -43,13 +43,14 @@ private:
 	void SendRegisterResponse(sf::TcpSocket& client, bool success, const std::string& message);
 	void SendLobbyCreateResponse(sf::TcpSocket& client, bool success);
 	void SendLobbyJoinResponse(sf::TcpSocket& client, bool success);
+	void SendRankingPacket(sf::TcpSocket& client, std::vector<Database::RankingEntry>& rankings);
 
 	void ReceiveHandshakePacket(sf::Packet data);
 	void ReceiveLoginPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveLobbyCreatePacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSocket& client);
-	void ReceiveRankingPacket(sf::Packet data);
+	void ReceiveRankingPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveStartGamePacket(sf::Packet data);
 	void ReceiveEndGamePacket(sf::Packet data);
 };
