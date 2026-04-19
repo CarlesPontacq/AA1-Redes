@@ -1,4 +1,5 @@
 #include "ServerPacketTypeManager.h"
+#include "MatchmakingManager.h"
 #include <iostream>
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
@@ -34,8 +35,8 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 	case PacketTypes::REGISTER:
 		ReceiveRegisterPacket(packet, client);
 		break;
-	case PacketTypes::LOOBY_CREATE:
-		ReceiveLobbyCreatePacket(packet);
+	case PacketTypes::LOBBY_CREATE:
+		ReceiveLobbyCreatePacket(packet, client);
 		break;
 	case PacketTypes::LOBBY_JOIN:
 		ReceiveLobbyJoinPacket(packet);
@@ -120,7 +121,10 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 
 	SendLoginResponse(client, correctLogin, loginUsername);
 
+	// Si es correcto, guardar tambiï¿½n los datos del usuario (nombre y puntos del ranking)
+	
 	if (correctLogin) {
+		MM->AddConnectedPlayer(&client, loginUsername, 15);
 		//Pasar a la siguiente escena
 	}
 }
@@ -144,7 +148,7 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	}
 }
 
-void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
+void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data, sf::TcpSocket& client)
 {
 	std::string lobbyID;
 
@@ -152,10 +156,10 @@ void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
 
 	bool lobbyIDIsAvailable = false;
 
-	//Funcion para comprobar si el ID esta disponible
+	bool successfulLobbyCreation = MM->CreateWaitingRoom(lobbyID, &client);
 	 
-	if (lobbyIDIsAvailable) {
-		//Añadir el jugador en el lobby
+	if (successfulLobbyCreation) {
+		//Aï¿½adir el jugador en el lobby
 		std::cout << "Lobby creado exitosamente, pasando a la sala de espera" << std::endl;
 		//Pasar a la siguiente escena o espera
 	}
@@ -175,7 +179,7 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
 	//Funcion para comprobar si la sala existe o si esta vacia
 
 	if (lobbyIsAvailable) {
-		//Añadir el jugador en el lobby
+		//Aï¿½adir el jugador en el lobby
 		std::cout << "Te has unido al lobby exitosamente" << std::endl;
 		//Pasar a la siguiente escena o espera
 	}

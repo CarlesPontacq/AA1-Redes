@@ -33,7 +33,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 	case PacketTypes::REGISTER:
 		ReceiveRegisterPacket(packet);
 		break;
-	case PacketTypes::LOOBY_CREATE:
+	case PacketTypes::LOBBY_CREATE:
 		ReceiveLobbyCreatePacket(packet);
 		break;
 	case PacketTypes::LOBBY_JOIN:
@@ -89,6 +89,21 @@ void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::st
 	packet << username;
 	packet << password;
 	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::LOBBY_CREATE;
+	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server)
+{
+
 }
 
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)

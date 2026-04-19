@@ -27,6 +27,7 @@ public:
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
+	sf::TcpSocket* GetServerSocket();
 
 private:
 	NetworkManager() = default;
