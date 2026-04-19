@@ -20,7 +20,6 @@ mono_crash.*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
@@ -34,8 +33,18 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# EXCEPCIÓN: Trackear x64/Release y su contenido
+!x64/
+!x64/Release/
+!x64/Release/**
+
 # Build results on 'Bin' directories
 **/[Bb]in/*
+
+# No ignorar la carpeta bin
+!**/[Bb]in/
+!**/[Bb]in/**
+
 # Uncomment if you have tasks that rely on *.refresh files to move binaries
 # (https://github.com/github/gitignore/pull/3736)
 #!**/[Bb]in/*.refresh
