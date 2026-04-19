@@ -54,6 +54,8 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 	{
 		if (roomId == waitingRooms[i].GetId())
 		{
+			if (waitingRooms[i].IsFull()) return false;
+
 			waitingRooms[i].AddPlayer(*GetPlayer(playerClient));
 			return true;
 		}

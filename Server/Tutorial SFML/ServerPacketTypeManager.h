@@ -38,12 +38,14 @@ private:
 
 	void SendLoginResponse(sf::TcpSocket& client, bool success, const std::string& message);
 	void SendRegisterResponse(sf::TcpSocket& client, bool success, const std::string& message);
+	void SendLobbyCreateResponse(sf::TcpSocket& client, bool success);
+	void SendLobbyJoinResponse(sf::TcpSocket& client, bool success);
 
 	void ReceiveHandshakePacket(sf::Packet data);
 	void ReceiveLoginPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveRegisterPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveLobbyCreatePacket(sf::Packet data, sf::TcpSocket& client);
-	void ReceiveLobbyJoinPacket(sf::Packet data);
+	void ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSocket& client);
 	void ReceiveRankingPacket(sf::Packet data);
 	void ReceiveStartGamePacket(sf::Packet data);
 	void ReceiveEndGamePacket(sf::Packet data);
