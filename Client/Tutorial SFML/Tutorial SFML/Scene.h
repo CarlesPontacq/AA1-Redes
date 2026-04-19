@@ -2,11 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include "Object.h"
 #include "SharedMemory.h"
+#include "config.h"
 
 class Scene
 {
 public:
-	std::string nextScene = "";
+	SceneOption nextScene = SceneOption::NONE;
 
 	virtual void enter(SharedMemory* _sharedMemory) {}
 	virtual void exit() {

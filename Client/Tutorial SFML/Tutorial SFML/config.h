@@ -9,3 +9,13 @@
 #define PLAYER_COUNT 4
 
 #define PLAYER_COUNTDOWN 20.0f //In seconds
+
+enum class SceneOption {
+	NONE,
+	LOGIN,
+	LOBBY,
+	GAME,
+	RANKING
+};
+
+#define FONT_PATH "arial.ttf"

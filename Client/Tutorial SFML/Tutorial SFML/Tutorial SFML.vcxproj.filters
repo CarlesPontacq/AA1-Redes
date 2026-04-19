@@ -98,7 +98,7 @@
     <ClInclude Include="PlayerManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="style.h">
+    <ClInclude Include="GameStyle.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
@@ -131,7 +131,10 @@
     <ClInclude Include="SharedMemory.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="LobbyManager.h">
+    <ClInclude Include="LobbyStyle.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginStyle.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="LobbyWaitingScene.h">

@@ -12,7 +12,7 @@
 
 class SceneManager
 {
-	std::unordered_map<std::string, Scene*> scenes;
+	std::unordered_map<SceneOption, Scene*> scenes;
 	Scene* curScene;
 	SharedMemory* sharedMemory;
 
@@ -37,16 +37,15 @@ public:
 					sharedMemory->saveUser("user" + i, otherUsers[j]);
 		}
 
-		scenes["Game"] = new GameScene();
-		scenes["Login"] = new LoginScene();
-		scenes["Lobby"] = new LobbyScene();
-		scenes["LobbyWait"] = new LobbyWaitingScene();
-		curScene = scenes["Login"];
+		scenes[SceneOption::GAME] = new GameScene();
+		scenes[SceneOption::LOGIN] = new LoginScene();
+		scenes[SceneOption::LOBBY] = new LobbyScene();
+		curScene = scenes[SceneOption::LOGIN];
 		curScene->enter(sharedMemory);
 	}
 
 	bool update(sf::RenderWindow& window) {
-		if (curScene->nextScene != "") {
+		if (curScene->nextScene != SceneOption::NONE) {
 			curScene->exit();
 			curScene = scenes[curScene->nextScene];
 			curScene->enter(sharedMemory);
