@@ -109,6 +109,8 @@ void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::T
 	packet << PacketTypes::LOBBY_CREATE;
 	packet << lobbyId;
 
+	LM->SetRoomId(lobbyId);
+
 	SendData(server, packet);
 }
 
@@ -120,6 +122,8 @@ void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::Tcp
 
 	packet << PacketTypes::LOBBY_JOIN;
 	packet << lobbyId;
+
+	LM->SetRoomId(lobbyId);
 
 	SendData(server, packet);
 }

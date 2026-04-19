@@ -156,7 +156,6 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	
 	if (correctLogin) {
 		MM->AddConnectedPlayer(&client, loginUsername, 15);
-		//Pasar a la siguiente escena
 	}
 }
 
@@ -175,7 +174,7 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	SendRegisterResponse(client, correctRegister, registerUsername);
 
 	if (correctRegister) {
-		//Pasar a la siguiente escena
+		MM->AddConnectedPlayer(&client, registerUsername, 15);
 	}
 }
 

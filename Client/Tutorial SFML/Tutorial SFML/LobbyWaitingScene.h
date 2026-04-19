@@ -12,9 +12,10 @@ class LobbyWaitingScene : public Scene
 {
 	sf::Font* arial;
 
-	std::string id = "e";
+	std::string id = "";
 	int playerCount = 1;
 	Button* playerAmountText;
+	Button* roomTitle;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
@@ -26,9 +27,9 @@ public:
 		titleRect.setPosition({ WINDOW_WIDTH * 0.49f - titleRect.getSize().x/2.f, WINDOW_HEIGHT * 0.3f });
 		titleRect.setFillColor(sf::Color::Transparent);
 		std::string titleText = "LOBBY WAITING ROOM (" + id + ")";
-		Button* title = new Button(titleRect, sf::Text(*arial, titleText), [](){});
+		roomTitle = new Button(titleRect, sf::Text(*arial, titleText), [](){});
 
-		objects.push_back(title);
+		objects.push_back(roomTitle);
 
 		// Players
 		sf::RectangleShape playerAmountRect;
@@ -51,6 +52,13 @@ public:
 			playerCount = LM->GetUpdatedPlayerCount();
 			std::string playerCountText = std::to_string(playerCount) + "/4";
 			playerAmountText->label.setString(playerCountText);
+		}
+
+		if (LM->GetRoomId() != id)
+		{
+			id = LM->GetRoomId();
+			std::string roomIdText = "LOBBY WAITING ROOM (" + id + ")";
+			roomTitle->label.setString(roomIdText);
 		}
 
 		return Scene::update(window);
