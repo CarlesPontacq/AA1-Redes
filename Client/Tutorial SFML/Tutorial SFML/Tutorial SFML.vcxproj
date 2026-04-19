@@ -156,7 +156,6 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ServerPacketTypesManager.cpp" />
     <ClCompile Include="SharedMemory.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
