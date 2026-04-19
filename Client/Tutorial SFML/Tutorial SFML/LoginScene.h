@@ -2,10 +2,10 @@
 #include "Scene.h"
 #include "GameManager.h"
 #include "Button.h"
+#include "NetworkManager.h"
 
 class LoginScene : public Scene
 {
-
 	sf::Font* arial;
 
 public:
@@ -37,7 +37,9 @@ public:
 		loginRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
 		loginRect.setPosition({ WINDOW_WIDTH * 0.5f - loginRect.getSize().x / 2, WINDOW_HEIGHT * 0.5f });
 		loginRect.setFillColor(sf::Color::Red);
-		Button* loginButton = new Button(loginRect, sf::Text(*arial, "Login"), []() {std::cout << "Hi";});
+		Button* loginButton = new Button(loginRect, sf::Text(*arial, "Login"), [nicknameField, passwordField]() {
+			NT->SendLoginAttemptServerPacket(nicknameField->realStr, passwordField->realStr);
+			});
 
 		objects.push_back(loginButton);
 
@@ -46,9 +48,20 @@ public:
 		registerRect.setSize({ WINDOW_WIDTH * 0.2f, WINDOW_HEIGHT * 0.15f });
 		registerRect.setPosition({ WINDOW_WIDTH * 0.5f - registerRect.getSize().x / 2, WINDOW_HEIGHT * 0.7f });
 		registerRect.setFillColor(sf::Color::Red);
-		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [&]() { this->nextScene = "Lobby"; });
+		Button* registerButton = new Button(registerRect, sf::Text(*arial, "Register"), [nicknameField, passwordField]() {
+			//this->nextScene = "Lobby";
+			NT->SendRegisterAttemptServerPacket(nicknameField->realStr, passwordField->realStr);
+			});
 
 		objects.push_back(registerButton);
+	}
+
+	bool update(sf::RenderWindow& window) override
+	{
+		if (NT->GetSuccessfulLogin())
+			nextScene = "Lobby";
+
+		return Scene::update(window);
 	}
 };
 

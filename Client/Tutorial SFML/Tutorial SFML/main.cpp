@@ -5,15 +5,16 @@
 int main() {
 	
 	NT->Init();
-	
-	while (!NT->GetDisconnectFromServer()) {
-		NT->Update();
-	}
 
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ WINDOW_WIDTH, WINDOW_HEIGHT }), WINDOW_NAME);
 
 	SceneManager sm = SceneManager();
-	while (sm.update(*window));
+	while (sm.update(*window))
+	{
+		if (!NT->GetDisconnectFromServer())
+			NT->Update();
+
+	};
 
 	delete window;
 }

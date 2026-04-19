@@ -8,7 +8,8 @@ class InputField : public Object
 public:
 	sf::RectangleShape box;
 	sf::Text text;
-	std::string str = "";
+	std::string realStr = "";
+	std::string displayStr = "";
 	int maxChars;
 	bool isCensored = false;
 	bool isSelected = false;
@@ -28,14 +29,25 @@ public:
 	void getChar(sf::Keyboard::Key key) {
 		if (!isSelected) return;
 
-		if (key == sf::Keyboard::Key::Backspace && str.size() > 0) 
-			str.pop_back();
+		if (key == sf::Keyboard::Key::Backspace && realStr.size() > 0)
+		{
+			realStr.pop_back();
+			displayStr.pop_back();
+		}
 
-		if (sf::Keyboard::Key::A <= key && key <= sf::Keyboard::Key::Z && str.size() < maxChars) 
-			str.push_back(isCensored ? '*' : (char)key - (int)sf::Keyboard::Key::A + 'A');
+		if (sf::Keyboard::Key::A <= key && key <= sf::Keyboard::Key::Z && realStr.size() < maxChars)
+		{
+			char c = (char)key - (int)sf::Keyboard::Key::A + 'A';
+			realStr.push_back(c);
+			displayStr.push_back(isCensored ? '*' : c);
+		}
 
-		if (sf::Keyboard::Key::Num0 <= key && key <= sf::Keyboard::Key::Num9 && str.size() < maxChars)
-			str.push_back(isCensored ? '*' : (char)key - (int)sf::Keyboard::Key::Num0 + '0');
+		if (sf::Keyboard::Key::Num0 <= key && key <= sf::Keyboard::Key::Num9 && realStr.size() < maxChars)
+		{
+			char c = (char)key - (int)sf::Keyboard::Key::Num0 + '0';
+			realStr.push_back(c);
+			displayStr.push_back(isCensored ? '*' : c);
+		}
 	}
 
 	void onClick(const sf::Event::MouseButtonPressed* mouse) {
@@ -45,7 +57,7 @@ public:
 	}
 
 	void render(sf::RenderWindow& window) override {
-		text.setString(str);
+		text.setString(displayStr);
 		text.setPosition({ box.getPosition().x + text.getCharacterSize(), box.getPosition().y + box.getSize().y / 2.0f - text.getCharacterSize() / 2.0f});
 		window.draw(box);
 		window.draw(text);
