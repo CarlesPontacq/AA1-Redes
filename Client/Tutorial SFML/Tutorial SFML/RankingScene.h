@@ -23,7 +23,6 @@ public:
 		std::vector<User> users;
 		users = SPTM->GetRanking();
 
-		//TODO: Get users ordered by most points, up to rankingListLength amount
 		for (int index = 0; index < users.size(); ++index)
 			objects.push_back(new Ranking(users[index], *font, index));
 	}

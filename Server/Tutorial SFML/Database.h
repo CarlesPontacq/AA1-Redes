@@ -14,7 +14,7 @@
 
 #define SERVER "127.0.0.1:3306"
 #define USERNAME "root"
-#define PASSWORD ""
+#define PASSWORD "enti"
 #define DATABASE "tres_en_raya_online"
 
 #define DB Database::Instance()
