@@ -7,6 +7,6 @@ struct Move
 	Move(int _row, int _column) : row(_row), column(_column) {}
 };
 
-Move noMove = { -1, 0 };
-Move nullMove = { -1, -1 };
+const Move noMove = { -1, 0 };
+const Move nullMove = { -1, -1 };
 

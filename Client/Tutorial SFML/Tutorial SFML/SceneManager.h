@@ -4,6 +4,7 @@
 #include "GameScene.h"
 #include "LoginScene.h"
 #include "LobbyScene.h"
+#include "RankingScene.h"
 #include <string>
 #include "User.h"
 #include "config.h"
@@ -39,7 +40,8 @@ public:
 		scenes[SceneOption::GAME] = new GameScene();
 		scenes[SceneOption::LOGIN] = new LoginScene();
 		scenes[SceneOption::LOBBY] = new LobbyScene();
-		curScene = scenes[SceneOption::GAME];
+		scenes[SceneOption::RANKING] = new RankingScene();
+		curScene = scenes[SceneOption::RANKING];
 		curScene->enter(sharedMemory);
 	}
 

@@ -7,7 +7,6 @@
 #include "GameStyle.h"
 #include "Object.h"
 #include "PlayerManager.h"
-#include "Move.h"
 
 class Board : public Object
 {		
