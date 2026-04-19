@@ -6,8 +6,8 @@
 struct Player
 {
 	sf::RectangleShape rectangle;
-	
 	sf::Text nick;
+	bool isCurrent = false;
 
 	Player() : nick(nullFont) {}
 
@@ -29,6 +29,12 @@ struct Player
 
 		nick.setCharacterSize(playersCharacterSize);
 		nick.setStyle(playersTextStyle);
+	}
+
+	void render(sf::RenderWindow& window) {
+		rectangle.setFillColor(isCurrent ? activePlayersBackground : playersBackground);
+		window.draw(rectangle);
+		window.draw(nick);
 	}
 };
 

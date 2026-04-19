@@ -7,6 +7,7 @@
 #include "GameStyle.h"
 #include "Object.h"
 #include "PlayerManager.h"
+#include "Move.h"
 
 class Board : public Object
 {		
@@ -21,6 +22,29 @@ public:
 			cells.push_back(std::vector<Cell>());
 			for (int j = 0; j < BOARD_WIDTH; ++j) cells.back().push_back(Cell());
 		}
+	}
+
+	void update() override {
+		//TODO: Receive info from other users
+		//Pseudocode:
+		/*
+		* Move move = NT->tryGetMove();
+		* 
+		* if(move == nullMove) return;
+		* 
+		* if(move == noMove) {
+		*	playerManager->nextPlayer(move);
+		* }
+		* 
+		* setCell(move.row, move.column, playerManager->currentPlayer);
+		* 
+		* if (checkWin(row, column))
+		* 	playerManager->winners[playerManager->currentPlayer] = true;
+		* 
+		* playerManager->nextPlayer(move);
+		* 
+		* 
+		*/
 	}
 
 	void render(sf::RenderWindow& window) override {
@@ -115,7 +139,7 @@ private:
 	}
 
 	void playTurn(int posX, int posY) {
-		if (!validClickPos(posX, posY)) return;
+		if (!validClickPos(posX, posY) || playerManager->currentPlayer != playerManager->user.userIndex) return;
 
 		int row = screenToBoardY(posY);
 		int column = screenToBoardX(posX);
@@ -126,7 +150,7 @@ private:
 		if (checkWin(row, column))
 			playerManager->winners[playerManager->currentPlayer] = true;
 
-		playerManager->nextPlayer();
+		playerManager->nextPlayer(Move(row, column));
 	}
 };
 

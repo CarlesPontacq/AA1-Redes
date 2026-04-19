@@ -34,6 +34,7 @@ const float playersAnchorY = 0.2f;
 const float playersSeparation = WINDOW_HEIGHT * 0.05f;
 
 const sf::Color playersBackground = sf::Color::Cyan;
+const sf::Color activePlayersBackground = sf::Color::Yellow;
 const int playersCharacterSize = 40;
 const sf::Text::Style playersTextStyle = sf::Text::Style::Bold;
 

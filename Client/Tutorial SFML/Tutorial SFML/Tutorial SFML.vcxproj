@@ -140,7 +140,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CountdownTimer.cpp" />
-    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputField.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="LoginScene.cpp" />
@@ -162,7 +162,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CountdownTimer.h" />
-    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputField.h" />
     <ClInclude Include="LobbyManager.h" />
     <ClInclude Include="LobbyScene.h" />
