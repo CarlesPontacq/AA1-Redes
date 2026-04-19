@@ -175,6 +175,7 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectCircle.h" />
     <ClInclude Include="ObjectShape.h" />
     <ClInclude Include="ObjectText.h" />
     <ClInclude Include="PlaceholderText.h" />

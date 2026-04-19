@@ -43,7 +43,7 @@ public:
 		scenes[SceneOption::LOBBY] = new LobbyScene();
 		scenes[SceneOption::WAITING_ROOM] = new LobbyWaitingScene();
 		scenes[SceneOption::RANKING] = new RankingScene();
-		curScene = scenes[SceneOption::LOGIN];
+		curScene = scenes[SceneOption::GAME];
 		curScene->enter(sharedMemory);
 	}
 
