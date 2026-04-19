@@ -60,6 +60,11 @@ bool MatchMakingManager::CreateWaitingRoom(std::string roomId, sf::TcpSocket* pl
 	return true;
 }
 
+void MatchMakingManager::DeleteWaitingRoom(std::string roomId)
+{
+
+}
+
 bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* playerClient)
 {
 	for (int i = 0; i < waitingRooms.size(); i++)
@@ -86,5 +91,22 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 			return true;
 		}
 	}
+	return false;
+}
+
+bool MatchMakingManager::AddPlayerThatStarted(std::string roomId)
+{
+	for (int i = 0; i < waitingRooms.size(); i++)
+	{
+		if (roomId == waitingRooms[i].GetId())
+		{
+			waitingRooms[i].AddToStartedPlayers();
+			if (waitingRooms[i].CanDisconnectRoom())
+				return true;
+			else
+				return false;
+		}
+	}
+
 	return false;
 }

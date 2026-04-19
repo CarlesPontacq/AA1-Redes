@@ -24,7 +24,8 @@ private:
 public:
 	void AddConnectedPlayer(sf::TcpSocket* playerClient, std::string username, int playerPoints);
 	bool CreateWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
+	void DeleteWaitingRoom(std::string roomId);
 	bool JoinWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
-
+	bool AddPlayerThatStarted(std::string roomId);
 };
 

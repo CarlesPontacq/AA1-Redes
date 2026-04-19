@@ -30,6 +30,8 @@ public:
 	void SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server);
 
+	void SendStartGameResponse(std::string lobbyId, sf::TcpSocket& server);
+
 private:
 	ServerPacketTypesManager() = default;
 	ServerPacketTypesManager(const ServerPacketTypesManager& ptm) = delete;

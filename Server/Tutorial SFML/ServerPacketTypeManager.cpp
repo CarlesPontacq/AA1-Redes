@@ -251,7 +251,14 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+	std::string lobbyID;
 
+	data >> lobbyID;
+
+	bool canDisconnectRoom = MM->AddPlayerThatStarted(lobbyID);
+
+	if (canDisconnectRoom)
+		MM->DeleteWaitingRoom(lobbyID);
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

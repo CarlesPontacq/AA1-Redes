@@ -37,6 +37,8 @@ public:
 	void SendLobbyCreateAttemptPacket(std::string lobbyId);
 	void SendLobbyJoinAttemptPacket(std::string lobbyId);
 
+	void SendStartGameResponse(std::string lobbyId);
+
 private:
 	NetworkManager() = default;
 	NetworkManager(const NetworkManager& nt) = delete;

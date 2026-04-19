@@ -11,6 +11,7 @@ private:
 	std::string id;
 	Player players[4];
 	int playersAdded = 0;
+	int playersStarted = 0;
 
 public:
 	std::string GetId() { return id; }
@@ -27,5 +28,7 @@ public:
 		return nullptr;
 	}
 	int GetPlayerAmount() { return playersAdded; }
+	bool CanDisconnectRoom() { return playersStarted >= 4; }
+	int AddToStartedPlayers() { playersStarted++; }
 	bool IsFull() { return playersAdded == 4; }
 };

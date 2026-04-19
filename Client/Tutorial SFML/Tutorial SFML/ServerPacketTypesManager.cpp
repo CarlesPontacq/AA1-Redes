@@ -128,6 +128,17 @@ void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::Tcp
 	SendData(server, packet);
 }
 
+void ServerPacketTypesManager::SendStartGameResponse(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::START_GAME;
+	packet << lobbyId;
+
+
+	SendData(server, packet);
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -219,6 +230,7 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+	LM.add
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)
