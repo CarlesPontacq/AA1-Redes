@@ -28,6 +28,14 @@ void NetworkManager::Update()
     }
 }
 
+sf::TcpSocket* NetworkManager::GetServerSocket()
+{
+    if (!disconnectFromServer)
+        return &socket;
+    
+    return nullptr;
+}
+
 void NetworkManager::HandleReceivedPackets()
 {
     sf::Packet receivePacket;

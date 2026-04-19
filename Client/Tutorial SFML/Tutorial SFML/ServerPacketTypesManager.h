@@ -7,7 +7,7 @@
 
 enum PacketTypes
 {
-	HANDSHAKE, LOGIN, REGISTER, LOOBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
 };
 
 class ServerPacketTypesManager
@@ -27,6 +27,8 @@ public:
 	void SendHandshake(sf::TcpSocket& server);
 	void SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server);
 	void SendRegisterAttempt(std::string username, std::string password, sf::TcpSocket& server);
+	void SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server);
+	void SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server);
 
 private:
 	ServerPacketTypesManager() = default;

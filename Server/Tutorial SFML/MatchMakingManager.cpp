@@ -1,4 +1,5 @@
 #include "MatchMakingManager.h"
+#include <iostream>
 
 bool MatchMakingManager::IsAvailableRoomId(std::string roomId)
 {
@@ -31,10 +32,18 @@ bool MatchMakingManager::CreateWaitingRoom(std::string roomId, sf::TcpSocket* pl
 	if (!IsAvailableRoomId(roomId))
 		return false;
 	
-	GameRoom room(roomId);
-	room.AddPlayer(*GetPlayer(playerClient));
+	Player* player = GetPlayer(playerClient);
 
-	waitingRooms.push_back(GameRoom(roomId));
+	if (player == nullptr)
+	{
+		std::cout << "Error: Jugador no encontrado";
+		return false;
+	}
+
+	GameRoom room(roomId);
+	room.AddPlayer(*player);
+
+	waitingRooms.push_back(room);
 
 	return true;
 }
@@ -46,6 +55,7 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 		if (roomId == waitingRooms[i].GetId())
 		{
 			waitingRooms[i].AddPlayer(*GetPlayer(playerClient));
+			return true;
 		}
 	}
 	return false;
