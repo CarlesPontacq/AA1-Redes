@@ -23,6 +23,29 @@ public:
 		}
 	}
 
+	void update() override {
+		//TODO: Receive info from other users
+		//Pseudocode:
+		/*
+		* Move move = NT->tryGetMove();
+		* 
+		* if(move == nullMove) return;
+		* 
+		* if(move == noMove) {
+		*	playerManager->nextPlayer(move);
+		* }
+		* 
+		* setCell(move.row, move.column, playerManager->currentPlayer);
+		* 
+		* if (checkWin(row, column))
+		* 	playerManager->winners[playerManager->currentPlayer] = true;
+		* 
+		* playerManager->nextPlayer(move);
+		* 
+		* 
+		*/
+	}
+
 	void render(sf::RenderWindow& window) override {
 		sf::RectangleShape square;
 		square.setSize({ boardSideLength, boardSideLength });
@@ -115,7 +138,7 @@ private:
 	}
 
 	void playTurn(int posX, int posY) {
-		if (!validClickPos(posX, posY)) return;
+		if (!validClickPos(posX, posY) || playerManager->currentPlayer != playerManager->user.userIndex) return;
 
 		int row = screenToBoardY(posY);
 		int column = screenToBoardX(posX);
@@ -126,7 +149,7 @@ private:
 		if (checkWin(row, column))
 			playerManager->winners[playerManager->currentPlayer] = true;
 
-		playerManager->nextPlayer();
+		playerManager->nextPlayer(Move(row, column));
 	}
 };
 

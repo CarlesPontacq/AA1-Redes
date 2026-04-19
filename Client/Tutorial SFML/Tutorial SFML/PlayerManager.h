@@ -2,22 +2,31 @@
 #include "Player.h"
 #include "User.h"
 #include "Object.h"
+#include "Move.h"
 class PlayerManager : public Object
 {
 public:
-	int currentPlayer;
+	int currentPlayer = 0;
 	Player players[PLAYER_COUNT];
 	User user;
 	std::vector<bool> winners;
 
 public:
-	void nextPlayer() {
+	void nextPlayer(Move move) {
+		//TODO: Notify others of move and player change
+		//Pseudocode:
+		/*
+		* NT->sendMove(move, currentPlayer);
+		*/
+
+		players[currentPlayer].isCurrent = false;
+
 		do {
 			currentPlayer++;
 			currentPlayer %= PLAYER_COUNT;
 		} while (winners[currentPlayer]);
 
-		//TODO: Notify others of move and player change
+		players[currentPlayer].isCurrent = true;
 	}
 
 public:
@@ -34,13 +43,13 @@ public:
 			else for (int othersIndex = 0; othersIndex < PLAYER_COUNT - 1; ++othersIndex) 
 					if (_otherUsers[othersIndex].userIndex == index) 
 						players[index] = Player(_otherUsers[othersIndex], font);
+
+		players[currentPlayer].isCurrent = true;
 	}
 
 	void render(sf::RenderWindow& window) override {
-		for (Player player : players) {
-			window.draw(player.rectangle);
-			window.draw(player.nick);
-		}
+		for (Player player : players)
+			player.render(window);
 	}
 };
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "User.h"
 #include "Board.h"
-#include "PlayerManager.h"
 #include "InputField.h"
 #include "Scene.h"
 #include "Object.h"
