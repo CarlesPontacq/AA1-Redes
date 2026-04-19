@@ -9,7 +9,7 @@
 
 enum PacketTypes
 {
-	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, RANKING, START_GAME, END_GAME
+	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, WAITING_ROOM_PLAYERS, RANKING, START_GAME, END_GAME
 };
 
 class ServerPacketTypesManager
@@ -27,6 +27,7 @@ private:
 public:
 	void ReceivePacket(sf::Packet packet, sf::TcpSocket& client);
 	void SendHandshake(sf::TcpSocket& client);
+	void SendUpdatedPlayerCount(sf::TcpSocket& client, int playerCount);
 
 private:
 	ServerPacketTypesManager() = default;

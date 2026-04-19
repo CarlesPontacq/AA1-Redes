@@ -41,6 +41,9 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
 	case PacketTypes::LOBBY_JOIN:
 		ReceiveLobbyJoinPacket(packet);
 		break;
+	case PacketTypes::WAITING_ROOM_PLAYERS:
+		ReceivePlayerCountPacket(packet);
+		break;
 	case PacketTypes::RANKING:
 		ReceiveRankingPacket(packet);
 		break;
@@ -77,6 +80,8 @@ void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& server)
 
 void ServerPacketTypesManager::SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
+	if (username.empty() || password.empty()) return;
+
 	sf::Packet packet;
 	packet << PacketTypes::LOGIN;
 	packet << username;
@@ -86,6 +91,8 @@ void ServerPacketTypesManager::SendLoginAttempt(std::string username, std::strin
 
 void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
+	if (username.empty() || password.empty()) return;
+
 	sf::Packet packet;
 	packet << PacketTypes::REGISTER;
 	packet << username;
@@ -95,20 +102,28 @@ void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::st
 
 void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server)
 {
+	if (lobbyId.empty()) return;
+
 	sf::Packet packet;
 
 	packet << PacketTypes::LOBBY_CREATE;
 	packet << lobbyId;
+
+	LM->SetRoomId(lobbyId);
 
 	SendData(server, packet);
 }
 
 void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server)
 {
+	if (lobbyId.empty()) return;
+
 	sf::Packet packet;
 
 	packet << PacketTypes::LOBBY_JOIN;
 	packet << lobbyId;
+
+	LM->SetRoomId(lobbyId);
 
 	SendData(server, packet);
 }
@@ -173,19 +188,29 @@ void ServerPacketTypesManager::ReceiveLobbyCreatePacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data)
 {
-	std::string lobbyID;
+	bool success;
 
-	data >> lobbyID;
+	data >> success;
 
-	bool lobbyIsAvailable = false;
+	bool lobbyIsAvailable = success;
 
 	if (lobbyIsAvailable) {
 		std::cout << "Te has unido al lobby exitosamente" << std::endl;
 		LM->JoinRoom();
 	}
 	else {
-		std::cout << "El lobby " << lobbyID << " esta lleno o no existe" << std::endl;
+		std::cout << "El lobby esta lleno o no existe" << std::endl;
 	}
+}
+
+void ServerPacketTypesManager::ReceivePlayerCountPacket(sf::Packet data)
+{
+	std::cout << "Paquete de player count recibido" << std::endl;
+	int playerCount = 0;
+
+	data >> playerCount;
+
+	LM->UpdatePlayerCount(playerCount);
 }
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)

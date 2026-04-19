@@ -24,7 +24,7 @@ public:
 
 		if (countdownClock.getElapsedTime().asSeconds() < PLAYER_COUNTDOWN) return;
 
-		playerManager->nextPlayer();
+		playerManager->nextPlayer(noMove);
 		countdownActive = false;
 	}
 };
