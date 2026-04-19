@@ -67,6 +67,7 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 		if (roomId == waitingRooms[i].GetId())
 		{
 			if (waitingRooms[i].IsFull()) return false;
+
 			std::cout << "Es waiting room " << i << std::endl;
 			waitingRooms[i].AddPlayer(*GetPlayer(playerClient));
 
@@ -75,6 +76,11 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 				sf::TcpSocket* currentClient = waitingRooms[i].GetPlayer(j)->client;
 				SPTM->SendUpdatedPlayerCount(*currentClient, waitingRooms[i].GetPlayerAmount());
 				std::cout << "Matchmaking ha enviado mensaje al cliente " << j << " de la sala " << std::endl;
+			}
+
+			if (waitingRooms[i].IsFull())
+			{
+				SPTM->SendInfoToStartGame(waitingRooms[i]);
 			}
 
 			return true;

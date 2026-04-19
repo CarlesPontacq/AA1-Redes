@@ -2,6 +2,7 @@
 #include <SFML/Network.hpp>
 #include "Bcrypt/bcrypt.h"
 #include "Database.h"
+#include "Game.h"
 
 #include <string>
 
@@ -28,6 +29,7 @@ public:
 	void ReceivePacket(sf::Packet packet, sf::TcpSocket& client);
 	void SendHandshake(sf::TcpSocket& client);
 	void SendUpdatedPlayerCount(sf::TcpSocket& client, int playerCount);
+	void SendInfoToStartGame(GameRoom game);
 
 private:
 	ServerPacketTypesManager() = default;

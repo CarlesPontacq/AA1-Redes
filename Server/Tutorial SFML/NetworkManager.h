@@ -2,7 +2,7 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include "ServerPacketTypeManager.h"
-
+#include "Game.h"
 
 #define NT NetworkManager::Instance()
 #define LISTENER_PORT 55000

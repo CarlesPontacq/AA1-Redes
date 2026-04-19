@@ -84,6 +84,36 @@ void ServerPacketTypesManager::SendUpdatedPlayerCount(sf::TcpSocket& client, int
 	SendData(client, packet);
 }
 
+void ServerPacketTypesManager::SendInfoToStartGame(GameRoom game)
+{
+	for (int i = 0; i < game.GetPlayerAmount(); i++)
+	{
+		sf::Packet packet;
+
+		packet << PacketTypes::START_GAME;
+		packet << game.GetId();
+
+		for (int j = 0; j < game.GetPlayerAmount(); j++)
+		{
+			if (j == i) continue;
+
+			int playerIndex = j;
+			std::optional<sf::IpAddress> ip = game.GetPlayer(j)->client->getRemoteAddress();
+			unsigned short port = game.GetPlayer(j)->client->getRemotePort();
+			std::string username = game.GetPlayer(j)->name;
+			int points = game.GetPlayer(j)->points;
+
+			packet << playerIndex;
+			packet << ip->toString();
+			packet << port;
+			packet << username;
+			packet << points;
+		}
+
+		SendData(*game.GetPlayer(i)->client, packet);
+	}
+}
+
 void ServerPacketTypesManager::SendLoginResponse(sf::TcpSocket& client, bool success, const std::string& username)
 {
 	sf::Packet packet;
@@ -221,6 +251,7 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)
