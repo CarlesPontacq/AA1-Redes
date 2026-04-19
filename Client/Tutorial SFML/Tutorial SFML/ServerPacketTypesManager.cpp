@@ -77,6 +77,8 @@ void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& server)
 
 void ServerPacketTypesManager::SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
+	if (username.empty() || password.empty()) return;
+
 	sf::Packet packet;
 	packet << PacketTypes::LOGIN;
 	packet << username;
@@ -86,6 +88,8 @@ void ServerPacketTypesManager::SendLoginAttempt(std::string username, std::strin
 
 void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::string password, sf::TcpSocket& server)
 {
+	if (username.empty() || password.empty()) return;
+
 	sf::Packet packet;
 	packet << PacketTypes::REGISTER;
 	packet << username;
@@ -95,6 +99,8 @@ void ServerPacketTypesManager::SendRegisterAttempt(std::string username, std::st
 
 void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server)
 {
+	if (lobbyId.empty()) return;
+
 	sf::Packet packet;
 
 	packet << PacketTypes::LOBBY_CREATE;
@@ -105,6 +111,8 @@ void ServerPacketTypesManager::SendLobbyCreateAttempt(std::string lobbyId, sf::T
 
 void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server)
 {
+	if (lobbyId.empty()) return;
+
 	sf::Packet packet;
 
 	packet << PacketTypes::LOBBY_JOIN;
