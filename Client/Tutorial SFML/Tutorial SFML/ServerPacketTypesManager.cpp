@@ -1,6 +1,7 @@
 #include "ServerPacketTypesManager.h"
 #include "NetworkManager.h"
 #include "LobbyManager.h"
+#include "User.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -128,6 +129,16 @@ void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::Tcp
 	SendData(server, packet);
 }
 
+void ServerPacketTypesManager::SendRankingPetition(int userId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::RANKING;
+	packet << userId;
+
+	SendData(server, packet);
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -146,6 +157,7 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data)
 	if (success) {
 		std::cout << "Login correcto! Bienvenido " << username << std::endl;
 		NT->SetSuccessfulLogin(true);
+		NT->SendRankingPetitionServerPacket(16);
 	}
 	else {
 		std::cout << "Login incorrecto" << std::endl;
@@ -163,6 +175,8 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 	if (success) {
 		std::cout << "Registro correcto! Usuario " << username << " creado" << std::endl;
 		NT->SetSuccessfulLogin(true);
+		NT->SendRankingPetitionServerPacket(16);
+
 	}
 	else {
 		std::cout << "Registro fallido " << std::endl;
@@ -215,6 +229,27 @@ void ServerPacketTypesManager::ReceivePlayerCountPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 {
+	int rankingSize;
+	data >> rankingSize;
+
+	for (int i = 0; i < rankingSize; i++)
+	{
+		User user;
+		data >> user.position;
+		data >> user.userIndex;
+		data >> user.nickname;
+		data >> user.score;
+
+		ranking.push_back(user);
+	}
+
+	std::cout << "\n=== TOP 10 RANKINGS ===" << std::endl;
+	for (const auto& user : ranking)
+	{
+		std::cout << user.position << ". "
+			<< user.nickname << " - "
+			<< user.score << " puntos" << std::endl;
+	}
 }
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
