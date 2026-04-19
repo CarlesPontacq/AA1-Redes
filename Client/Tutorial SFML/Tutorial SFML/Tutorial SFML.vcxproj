@@ -175,6 +175,9 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectShape.h" />
+    <ClInclude Include="ObjectText.h" />
+    <ClInclude Include="PlaceholderText.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Ranking.h" />
@@ -185,6 +188,7 @@
     <ClInclude Include="ServerPacketTypesManager.h" />
     <ClInclude Include="SharedMemory.h" />
     <ClInclude Include="GameStyle.h" />
+    <ClInclude Include="StatusText.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>

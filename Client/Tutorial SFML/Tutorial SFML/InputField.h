@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Object.h"
 #include "GameStyle.h"
+#include <string>
 
 class InputField : public Object
 {
@@ -11,73 +12,128 @@ public:
 	std::string realStr = "";
 	std::string displayStr = "";
 	int maxChars;
+
 	bool isCensored = false;
-	bool isSelected = false;
+	bool isFocused = false;
 
-	InputField() : text(nullFont) {}
+	sf::Color idleOutlineColor = sf::Color(255, 255, 255, 30);
+	sf::Color focusOutlineColor = sf::Color(88, 101, 242, 220);
 
-	InputField(sf::RectangleShape _rect, sf::Text _text, int _maxChars) : box(_rect), text(_text), maxChars(_maxChars) {}
+	InputField() : text(nullFont), maxChars(0) {}
 
-	bool clickedInside(int posX, int posY) {
-		sf::Vector2f boxPosition = box.getPosition();
-		sf::Vector2f boxSize = box.getSize();
-		return 
-			boxPosition.x <= posX && posX <= boxPosition.x + boxSize.x &&
-			boxPosition.y <= posY && posY <= boxPosition.y + boxSize.y;
+	InputField(sf::RectangleShape _rect, sf::Text _text, int _maxChars)
+		: box(_rect), text(_text), maxChars(_maxChars)
+	{
+		box.setOutlineThickness(2.f);
+		box.setOutlineColor(idleOutlineColor);
+
+		if (text.getCharacterSize() == 30)
+			text.setCharacterSize(26);
+
+		text.setFillColor(sf::Color(236, 240, 255));
+		updateDisplayString();
 	}
 
-	void getChar(sf::Keyboard::Key key) {
-		if (!isSelected) return;
+	bool clickedInside(int posX, int posY) {
+		return box.getGlobalBounds().contains({ static_cast<float>(posX), static_cast<float>(posY) });
+	}
 
-		if (key == sf::Keyboard::Key::Backspace && realStr.size() > 0)
-		{
+	void setTextCharacterSize(unsigned int size) {
+		text.setCharacterSize(size);
+	}
+
+	void setTextColor(const sf::Color& color) {
+		text.setFillColor(color);
+	}
+
+	void setIdleOutlineColor(const sf::Color& color) {
+		idleOutlineColor = color;
+		if (!isFocused)
+			box.setOutlineColor(idleOutlineColor);
+	}
+
+	void setFocusOutlineColor(const sf::Color& color) {
+		focusOutlineColor = color;
+		if (isFocused)
+			box.setOutlineColor(focusOutlineColor);
+	}
+
+	void setFocused(bool focused) {
+		isFocused = focused;
+		box.setOutlineColor(isFocused ? focusOutlineColor : idleOutlineColor);
+	}
+
+	void setSelected(bool selected) {
+		setFocused(selected);
+	}
+
+	void updateDisplayString() {
+		if (isCensored)
+			displayStr = std::string(realStr.size(), '*');
+		else
+			displayStr = realStr;
+	}
+
+	void appendCharacter(char c) {
+		if (static_cast<int>(realStr.size()) >= maxChars)
+			return;
+
+		realStr.push_back(c);
+		updateDisplayString();
+	}
+
+	void removeLastCharacter() {
+		if (!realStr.empty()) {
 			realStr.pop_back();
-			displayStr.pop_back();
+			updateDisplayString();
+		}
+	}
+
+	void handleTextEntered(std::uint32_t unicode) {
+		if (!isFocused)
+			return;
+
+		// Backspace
+		if (unicode == 8) {
+			removeLastCharacter();
+			return;
 		}
 
-		if (sf::Keyboard::Key::A <= key && key <= sf::Keyboard::Key::Z && realStr.size() < maxChars)
-		{
-			char c = (char)key - (int)sf::Keyboard::Key::A + 'A';
-			realStr.push_back(c);
-			displayStr.push_back(isCensored ? '*' : c);
+		if (unicode == 13 || unicode == 9 || unicode == 27) {
+			return;
 		}
 
-		if (sf::Keyboard::Key::Num0 <= key && key <= sf::Keyboard::Key::Num9 && realStr.size() < maxChars)
-		{
-			char c = (char)key - (int)sf::Keyboard::Key::Num0 + '0';
-			realStr.push_back(c);
-			displayStr.push_back(isCensored ? '*' : c);
+		if (unicode >= 32 && unicode <= 126) {
+			appendCharacter(static_cast<char>(unicode));
 		}
 	}
 
 	void onClick(const sf::Event::MouseButtonPressed* mouse) {
-		if (isSelected && !clickedInside(mouse->position.x, mouse->position.y) || 
-			!isSelected && clickedInside(mouse->position.x, mouse->position.y))
-			isSelected = !isSelected;
+		setFocused(clickedInside(mouse->position.x, mouse->position.y));
 	}
 
 	void render(sf::RenderWindow& window) override {
 		text.setString(displayStr);
-		text.setPosition({ box.getPosition().x + text.getCharacterSize(), box.getPosition().y + box.getSize().y / 2.0f - text.getCharacterSize() / 2.0f});
+
+		sf::FloatRect textBounds = text.getLocalBounds();
+		text.setPosition({
+			box.getPosition().x + 14.f,
+			box.getPosition().y + (box.getSize().y - textBounds.size.y) / 2.f - textBounds.position.y - 2.f
+			});
+
 		window.draw(box);
 		window.draw(text);
 	}
 
 	void handleEvent(const sf::Event& event) override {
 		if (const sf::Event::MouseButtonPressed* mousePressed = event.getIf<sf::Event::MouseButtonPressed>()) {
-
-			switch (mousePressed->button)
-			{
-			case sf::Mouse::Button::Left:
+			if (mousePressed->button == sf::Mouse::Button::Left) {
 				onClick(mousePressed);
-				break;
-			default:
-				break;
 			}
 		}
 
-		if (const sf::Event::KeyPressed* keyPressed = event.getIf<sf::Event::KeyPressed>())
-			getChar(keyPressed->code);
+		if (const sf::Event::TextEntered* textEntered = event.getIf<sf::Event::TextEntered>()) {
+			handleTextEntered(textEntered->unicode);
+		}
 	}
 };
-
