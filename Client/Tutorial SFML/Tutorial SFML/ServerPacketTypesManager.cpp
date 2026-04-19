@@ -1,7 +1,7 @@
 #include "ServerPacketTypesManager.h"
 #include "NetworkManager.h"
 #include "LobbyManager.h"
-#include "RankingEntry.h"
+#include "User.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -232,25 +232,23 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 	int rankingSize;
 	data >> rankingSize;
 
-	std::vector<RankingEntry> rankings;
-
 	for (int i = 0; i < rankingSize; i++)
 	{
-		RankingEntry entry;
-		data >> entry.position;
-		data >> entry.userId;
-		data >> entry.username;
-		data >> entry.points;
+		User user;
+		data >> user.position;
+		data >> user.userIndex;
+		data >> user.nickname;
+		data >> user.score;
 
-		rankings.push_back(entry);
+		ranking.push_back(user);
 	}
 
 	std::cout << "\n=== TOP 10 RANKINGS ===" << std::endl;
-	for (const auto& entry : rankings)
+	for (const auto& user : ranking)
 	{
-		std::cout << entry.position << ". "
-			<< entry.username << " - "
-			<< entry.points << " puntos" << std::endl;
+		std::cout << user.position << ". "
+			<< user.nickname << " - "
+			<< user.score << " puntos" << std::endl;
 	}
 }
 

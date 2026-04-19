@@ -2,6 +2,7 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <string>
+#include "User.h"
 
 #define SPTM ServerPacketTypesManager::Instance()
 
@@ -19,8 +20,10 @@ public:
 		return &ptm;
 	}
 
+
 private:
 	std::string handshakeMessage = "Handshake realizado";
+	std::vector<User> ranking;
 
 public:
 	void ReceivePacket(sf::Packet packet);
@@ -30,6 +33,8 @@ public:
 	void SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendRankingPetition(int userId, sf::TcpSocket& server);
+
+	inline std::vector<User> GetRanking() { return ranking; }
 
 private:
 	ServerPacketTypesManager() = default;

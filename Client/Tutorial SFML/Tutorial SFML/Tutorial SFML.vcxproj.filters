@@ -161,9 +161,6 @@
     <ClInclude Include="RankingStyle.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="RankingEntry.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="arial.ttf" />

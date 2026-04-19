@@ -178,7 +178,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Ranking.h" />
-    <ClInclude Include="RankingEntry.h" />
     <ClInclude Include="RankingScene.h" />
     <ClInclude Include="RankingStyle.h" />
     <ClInclude Include="Scene.h" />
