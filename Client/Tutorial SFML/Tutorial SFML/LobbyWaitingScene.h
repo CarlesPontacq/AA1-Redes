@@ -1,45 +1,247 @@
 #pragma once
 #include "Scene.h"
 #include "config.h"
-#include "InputField.h"
-#include "Button.h"
-#include "ServerPacketTypesManager.h"
 #include "NetworkManager.h"
 #include "LobbyManager.h"
-#include <iostream>
+#include "ObjectShape.h"
+#include "ObjectText.h"
+#include "ObjectCircle.h"
+#include "WaitingRoomStyle.h"
+#include "DynamicTextObject.h"
+#include <string>
 
 class LobbyWaitingScene : public Scene
 {
-	sf::Font* arial;
+	sf::Font* font = nullptr;
 
 	std::string id = "";
 	int playerCount = 1;
-	Button* playerAmountText;
-	Button* roomTitle;
+
+	sf::Text* roomCodeValue = nullptr;
+	sf::Text* playerCountValue = nullptr;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
-		arial = new sf::Font("arial.ttf");
+		sharedMemory = _sharedMemory;
+		font = new sf::Font(FONT_PATH);
 
-		// Title
-		sf::RectangleShape titleRect;
-		titleRect.setSize({ WINDOW_WIDTH * 0.8f, WINDOW_HEIGHT * 0.3f });
-		titleRect.setPosition({ WINDOW_WIDTH * 0.49f - titleRect.getSize().x/2.f, WINDOW_HEIGHT * 0.3f });
-		titleRect.setFillColor(sf::Color::Transparent);
-		std::string titleText = "LOBBY WAITING ROOM (" + id + ")";
-		roomTitle = new Button(titleRect, sf::Text(*arial, titleText), [](){});
+		id = LM->GetRoomId();
+		if (id.empty())
+			id = "----";
 
-		objects.push_back(roomTitle);
+		playerCount = LM->GetUpdatedPlayerCount();
+		if (playerCount <= 0)
+			playerCount = 1;
 
-		// Players
-		sf::RectangleShape playerAmountRect;
-		playerAmountRect.setSize({ WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.15f });
-		playerAmountRect.setPosition({ WINDOW_WIDTH * 0.5f - playerAmountRect.getSize().x/2.f, WINDOW_HEIGHT * 0.5f});
-		playerAmountRect.setFillColor(sf::Color::Transparent);
-		std::string playerCountText = std::to_string(playerCount) + "/4";
-		playerAmountText = new Button(playerAmountRect, sf::Text(*arial, playerCountText), []() {});
+		// =========================
+		// BACKGROUND
+		// =========================
+		sf::RectangleShape background;
+		background.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
+		background.setPosition({ 0.f, 0.f });
+		background.setFillColor(waitingBackgroundColor);
+		objects.push_back(new ObjectShape(background));
 
-		objects.push_back(playerAmountText);
+		// =========================
+		// SUBTLE GRID (3x3)
+		// =========================
+		float gridWidth = WINDOW_WIDTH * 0.50f;
+		float gridHeight = WINDOW_HEIGHT * 0.50f;
+
+		float startX = WINDOW_WIDTH * 0.5f - gridWidth / 2.f;
+		float startY = WINDOW_HEIGHT * 0.5f - gridHeight / 2.f;
+
+		for (int i = 1; i <= 2; i++) {
+			sf::RectangleShape line;
+			line.setSize({ 2.f, gridHeight });
+			line.setPosition({ startX + (gridWidth / 3.f) * i, startY });
+			line.setFillColor(waitingGridColor);
+			objects.push_back(new ObjectShape(line));
+		}
+
+		for (int i = 1; i <= 2; i++) {
+			sf::RectangleShape line;
+			line.setSize({ gridWidth, 2.f });
+			line.setPosition({ startX, startY + (gridHeight / 3.f) * i });
+			line.setFillColor(waitingGridColor);
+			objects.push_back(new ObjectShape(line));
+		}
+
+		// =========================
+		// DECORATIVE X
+		// =========================
+		sf::RectangleShape xLine1;
+		xLine1.setSize({ 120.f, 4.f });
+		xLine1.setOrigin({ xLine1.getSize().x / 2.f, xLine1.getSize().y / 2.f });
+		xLine1.setPosition({ startX + 90.f, startY + 90.f });
+		xLine1.setFillColor(waitingDecorativeXColor);
+		xLine1.setRotation(sf::degrees(45.f));
+		objects.push_back(new ObjectShape(xLine1));
+
+		sf::RectangleShape xLine2 = xLine1;
+		xLine2.setRotation(sf::degrees(-45.f));
+		objects.push_back(new ObjectShape(xLine2));
+
+		// =========================
+		// DECORATIVE O
+		// =========================
+		sf::CircleShape oShape;
+		oShape.setRadius(40.f);
+		oShape.setPosition({
+			startX + gridWidth - 120.f,
+			startY + gridHeight - 120.f
+			});
+		oShape.setFillColor(sf::Color::Transparent);
+		oShape.setOutlineThickness(4.f);
+		oShape.setOutlineColor(waitingDecorativeOColor);
+		objects.push_back(new ObjectCircle(oShape));
+
+		// =========================
+		// PANEL SHADOW
+		// =========================
+		sf::RectangleShape panelShadow;
+		panelShadow.setSize(waitingPanelSize);
+		panelShadow.setPosition({
+			WINDOW_WIDTH / 2.f - waitingPanelSize.x / 2.f + 8.f,
+			WINDOW_HEIGHT / 2.f - waitingPanelSize.y / 2.f + 10.f
+			});
+		panelShadow.setFillColor(sf::Color(0, 0, 0, 100));
+		objects.push_back(new ObjectShape(panelShadow));
+
+		// =========================
+		// PANEL
+		// =========================
+		sf::RectangleShape panel;
+		panel.setSize(waitingPanelSize);
+		panel.setPosition({
+			WINDOW_WIDTH / 2.f - waitingPanelSize.x / 2.f,
+			WINDOW_HEIGHT / 2.f - waitingPanelSize.y / 2.f
+			});
+		panel.setFillColor(waitingPanelColor);
+		panel.setOutlineThickness(waitingPanelOutlineThickness);
+		panel.setOutlineColor(waitingPanelOutlineColor);
+		objects.push_back(new ObjectShape(panel));
+
+		sf::RectangleShape accentLine;
+		accentLine.setSize({ waitingPanelSize.x, 6.f });
+		accentLine.setPosition(panel.getPosition());
+		accentLine.setFillColor(waitingAccentXColor);
+		objects.push_back(new ObjectShape(accentLine));
+
+		// =========================
+		// TITLE
+		// =========================
+		sf::Text title(*font, waitingTitleText);
+		title.setCharacterSize(waitingTitleSize);
+		title.setFillColor(waitingTitleColor);
+		{
+			sf::FloatRect bounds = title.getLocalBounds();
+			title.setPosition({
+				WINDOW_WIDTH / 2.f - bounds.size.x / 2.f - bounds.position.x,
+				panel.getPosition().y + 26.f
+				});
+		}
+		objects.push_back(new ObjectText(title));
+
+		// =========================
+		// SUBTITLE
+		// =========================
+		sf::Text subtitle(*font, waitingSubtitleText);
+		subtitle.setCharacterSize(waitingSubtitleSize);
+		subtitle.setFillColor(waitingSubtitleColor);
+		{
+			sf::FloatRect bounds = subtitle.getLocalBounds();
+			subtitle.setPosition({
+				WINDOW_WIDTH / 2.f - bounds.size.x / 2.f - bounds.position.x,
+				panel.getPosition().y + 78.f
+				});
+		}
+		objects.push_back(new ObjectText(subtitle));
+
+		// =========================
+		// ROOM CODE LABEL
+		// =========================
+		sf::Text roomCodeLabel(*font, "Room Code");
+		roomCodeLabel.setCharacterSize(waitingRoomCodeLabelSize);
+		roomCodeLabel.setFillColor(waitingLabelColor);
+		roomCodeLabel.setPosition({
+			WINDOW_WIDTH / 2.f - waitingRoomCodeBoxSize.x / 2.f,
+			WINDOW_HEIGHT * 0.34f
+			});
+		objects.push_back(new ObjectText(roomCodeLabel));
+
+		sf::RectangleShape roomCodeBox;
+		roomCodeBox.setSize(waitingRoomCodeBoxSize);
+		roomCodeBox.setPosition({
+			WINDOW_WIDTH / 2.f - waitingRoomCodeBoxSize.x / 2.f,
+			WINDOW_HEIGHT * 0.38f
+			});
+		roomCodeBox.setFillColor(waitingRoomCodeBoxColor);
+		roomCodeBox.setOutlineThickness(2.f);
+		roomCodeBox.setOutlineColor(waitingRoomCodeOutlineColor);
+		objects.push_back(new ObjectShape(roomCodeBox));
+
+		roomCodeValue = new sf::Text(*font, id);
+		roomCodeValue->setCharacterSize(waitingRoomCodeSize);
+		roomCodeValue->setFillColor(waitingValueColor);
+		{
+			sf::FloatRect bounds = roomCodeValue->getLocalBounds();
+			roomCodeValue->setPosition({
+				WINDOW_WIDTH / 2.f - bounds.size.x / 2.f - bounds.position.x,
+				roomCodeBox.getPosition().y + (roomCodeBox.getSize().y - bounds.size.y) / 2.f - bounds.position.y - 2.f
+				});
+		}
+		objects.push_back(new DynamicTextObject(roomCodeValue));
+
+		// =========================
+		// PLAYER COUNT LABEL
+		// =========================
+		sf::Text playerCountLabel(*font, "Players");
+		playerCountLabel.setCharacterSize(waitingPlayerCountLabelSize);
+		playerCountLabel.setFillColor(waitingLabelColor);
+		playerCountLabel.setPosition({
+			WINDOW_WIDTH / 2.f - waitingPlayerCountBoxSize.x / 2.f,
+			WINDOW_HEIGHT * 0.54f
+			});
+		objects.push_back(new ObjectText(playerCountLabel));
+
+		sf::RectangleShape playerCountBox;
+		playerCountBox.setSize(waitingPlayerCountBoxSize);
+		playerCountBox.setPosition({
+			WINDOW_WIDTH / 2.f - waitingPlayerCountBoxSize.x / 2.f,
+			WINDOW_HEIGHT * 0.58f
+			});
+		playerCountBox.setFillColor(waitingPlayerCountBoxColor);
+		playerCountBox.setOutlineThickness(2.f);
+		playerCountBox.setOutlineColor(waitingPlayerCountOutlineColor);
+		objects.push_back(new ObjectShape(playerCountBox));
+
+		playerCountValue = new sf::Text(*font, std::to_string(playerCount) + "/4");
+		playerCountValue->setCharacterSize(waitingPlayerCountSize);
+		playerCountValue->setFillColor(waitingValueColor);
+		{
+			sf::FloatRect bounds = playerCountValue->getLocalBounds();
+			playerCountValue->setPosition({
+				WINDOW_WIDTH / 2.f - bounds.size.x / 2.f - bounds.position.x,
+				playerCountBox.getPosition().y + (playerCountBox.getSize().y - bounds.size.y) / 2.f - bounds.position.y - 4.f
+				});
+		}
+		objects.push_back(new DynamicTextObject(playerCountValue));
+
+		// =========================
+		// FOOTER
+		// =========================
+		sf::Text footer(*font, waitingFooterText);
+		footer.setCharacterSize(waitingFooterSize);
+		footer.setFillColor(waitingFooterColor);
+		{
+			sf::FloatRect bounds = footer.getLocalBounds();
+			footer.setPosition({
+				WINDOW_WIDTH / 2.f - bounds.size.x / 2.f - bounds.position.x,
+				WINDOW_HEIGHT * 0.80f
+				});
+		}
+		objects.push_back(new ObjectText(footer));
 	}
 
 	bool update(sf::RenderWindow& window) override
@@ -50,18 +252,23 @@ public:
 		if (LM->GetUpdatedPlayerCount() != playerCount)
 		{
 			playerCount = LM->GetUpdatedPlayerCount();
-			std::string playerCountText = std::to_string(playerCount) + "/4";
-			playerAmountText->label.setString(playerCountText);
+			if (playerCount <= 0)
+				playerCount = 1;
+
+			if (playerCountValue) {
+				playerCountValue->setString(std::to_string(playerCount) + "/4");
+			}
 		}
 
-		if (LM->GetRoomId() != id)
+		if (LM->GetRoomId() != id && !LM->GetRoomId().empty())
 		{
 			id = LM->GetRoomId();
-			std::string roomIdText = "LOBBY WAITING ROOM (" + id + ")";
-			roomTitle->label.setString(roomIdText);
+
+			if (roomCodeValue) {
+				roomCodeValue->setString(id);
+			}
 		}
 
 		return Scene::update(window);
 	}
 };
-
