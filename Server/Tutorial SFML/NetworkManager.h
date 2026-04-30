@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Network.hpp>
 #include <iostream>
+#include <unordered_map>
 #include "ServerPacketTypeManager.h"
 
 
@@ -22,6 +23,7 @@ private:
 	sf::SocketSelector selector;
 
 	std::vector <sf::TcpSocket*> clients;
+	std::unordered_map<unsigned int, sf::TcpSocket*> clients;
 	sf::TcpSocket* newClient;
 	
 public:
@@ -40,5 +42,8 @@ private:
 	NetworkManager(const NetworkManager& nt) = delete;
 	NetworkManager& operator=(const NetworkManager& nt) = delete;
 	~NetworkManager() = default;
+
+	unsigned int GenerateUnusedID();
+	unsigned int CheckIfIDExists(int IDToCheck);
 };
 

@@ -31,9 +31,9 @@ void NetworkManager::EstablishConnectionWithClient()
             SPTM->SendHandshake(*newClient);
             selector.add(*newClient);
 
-            //Se crearia aqui el cliente con su clase Cliente
+            unsigned int clientID = GenerateUnusedID();
 
-            clients.push_back(newClient);
+            clients.emplace(clientID, *newClient);
             std::cout << "Nueva conexion establecida" << std::endl;
         }
     }
@@ -64,7 +64,7 @@ void NetworkManager::CheckForDisconnection()
                 if (clients[i]->receive(packet) == sf::Socket::Status::Disconnected) {
                     selector.remove(*clients[i]);
                     delete clients[i];
-                    clients.erase(clients.begin() + i);
+                    //clients.erase(clients.begin() + i);
                     i--;
 
                     std::cout << "Cliente desconectado" << std::endl;
@@ -72,5 +72,25 @@ void NetworkManager::CheckForDisconnection()
             }
         }
     }
+}
+
+unsigned int NetworkManager::GenerateUnusedID()
+{
+    unsigned int newID = rand();
+
+    if (clients.find(newID) != clients.end()) {
+        newID = GenerateUnusedID();
+    }
+
+    std::cout << "New Client ID: " << newID << std::endl;
+
+    return newID;
+}
+
+unsigned int NetworkManager::CheckIfIDExists(int IDToCheck)
+{
+
+
+    return 0;
 }
 
