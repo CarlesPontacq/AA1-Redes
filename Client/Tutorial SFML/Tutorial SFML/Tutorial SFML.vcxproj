@@ -164,6 +164,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CountdownTimer.h" />
+    <ClInclude Include="DynamicTextObject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputField.h" />
     <ClInclude Include="LobbyManager.h" />
@@ -175,6 +176,10 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectCircle.h" />
+    <ClInclude Include="ObjectShape.h" />
+    <ClInclude Include="ObjectText.h" />
+    <ClInclude Include="PlaceholderText.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Ranking.h" />
@@ -185,7 +190,9 @@
     <ClInclude Include="ServerPacketTypesManager.h" />
     <ClInclude Include="SharedMemory.h" />
     <ClInclude Include="GameStyle.h" />
+    <ClInclude Include="StatusText.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="WaitingRoomStyle.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="arial.ttf" />
