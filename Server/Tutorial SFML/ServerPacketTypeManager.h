@@ -2,6 +2,7 @@
 #include <SFML/Network.hpp>
 #include "Bcrypt/bcrypt.h"
 #include "Database.h"
+#include "NetworkManager.h"
 
 #include <string>
 

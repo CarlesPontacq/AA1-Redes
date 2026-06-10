@@ -6,7 +6,7 @@ int main() {
 	
 	NT->Init();
 
-	//if (NT->GetDisconnectFromServer()) return 0;
+	if (NT->GetDisconnectFromServer()) return 0;
 
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ WINDOW_WIDTH, WINDOW_HEIGHT }), WINDOW_NAME);
 

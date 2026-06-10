@@ -31,9 +31,11 @@ void NetworkManager::EstablishConnectionWithClient()
             SPTM->SendHandshake(*newClient);
             selector.add(*newClient);
 
-            unsigned int clientID = GenerateUnusedID();
+            clients.push_back(newClient);
 
-            clients.emplace(clientID, *newClient);
+			User newUser;
+			clientsMap.insert({ newClient, newUser });
+
             std::cout << "Nueva conexion establecida" << std::endl;
         }
     }
@@ -62,9 +64,12 @@ void NetworkManager::CheckForDisconnection()
                 sf::Packet packet;
 
                 if (clients[i]->receive(packet) == sf::Socket::Status::Disconnected) {
+					clientsMap.erase(clients[i]);
+
                     selector.remove(*clients[i]);
+
                     delete clients[i];
-                    //clients.erase(clients.begin() + i);
+                    clients.erase(clients.begin() + i);
                     i--;
 
                     std::cout << "Cliente desconectado" << std::endl;
@@ -74,23 +79,26 @@ void NetworkManager::CheckForDisconnection()
     }
 }
 
-unsigned int NetworkManager::GenerateUnusedID()
+void NetworkManager::SetNewCorrectUser(sf::TcpSocket* client, std::string username, int points)
 {
-    unsigned int newID = rand();
-
-    if (clients.find(newID) != clients.end()) {
-        newID = GenerateUnusedID();
+    if (clientsMap.find(client) != clientsMap.end()) {
+		clientsMap[client].nickname = username;
+		clientsMap[client].score = points;
+        std::cout << "Cambiando el usuario " << clientsMap[client].nickname << " por : " << username << std::endl;
     }
-
-    std::cout << "New Client ID: " << newID << std::endl;
-
-    return newID;
 }
 
-unsigned int NetworkManager::CheckIfIDExists(int IDToCheck)
+bool NetworkManager::CheckIfNewUserExists(sf::TcpSocket* client, std::string username)
 {
+	bool userExists = false;
 
+    for(auto& pair : clientsMap) {
+        if (pair.second.nickname == username) {
+	        std::cout << "Verificando si el usuario " << username << " es el siguiente usuario: " << clientsMap[client].nickname << std::endl;
+            userExists = true;
+            break;
+        }
+	}
 
-    return 0;
+    return userExists;
 }
-

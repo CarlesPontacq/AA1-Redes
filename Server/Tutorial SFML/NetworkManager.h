@@ -3,7 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 #include "ServerPacketTypeManager.h"
-
+#include "User.h"
 
 #define NT NetworkManager::Instance()
 #define LISTENER_PORT 55000
@@ -23,7 +23,7 @@ private:
 	sf::SocketSelector selector;
 
 	std::vector <sf::TcpSocket*> clients;
-	std::unordered_map<unsigned int, sf::TcpSocket*> clients;
+	std::unordered_map<sf::TcpSocket*, User> clientsMap;
 	sf::TcpSocket* newClient;
 	
 public:
@@ -32,6 +32,8 @@ public:
 	void EstablishConnectionWithClient();
 	void ReceiveClientPacket();
 	void CheckForDisconnection();
+	void SetNewCorrectUser(sf::TcpSocket* client, std::string username, int points);
+	bool CheckIfNewUserExists(sf::TcpSocket* client, std::string username);
 	
 	inline void CloseServer() { closeServer = true; }
 	inline bool GetCloseServer() { return closeServer; }
@@ -42,8 +44,5 @@ private:
 	NetworkManager(const NetworkManager& nt) = delete;
 	NetworkManager& operator=(const NetworkManager& nt) = delete;
 	~NetworkManager() = default;
-
-	unsigned int GenerateUnusedID();
-	unsigned int CheckIfIDExists(int IDToCheck);
 };
 

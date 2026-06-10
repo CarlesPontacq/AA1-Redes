@@ -169,15 +169,20 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	data >> loginUsername;
 	data >> loginPassword;
 
+	if(NT->CheckIfNewUserExists(&client, loginUsername)) {
+		SendLoginResponse(client, false, loginUsername);
+		return;
+	}
+
 	int userId = 0;
 
 	bool correctLogin = DB->LoginUser(loginUsername, loginPassword, userId);
 
 	SendLoginResponse(client, correctLogin, loginUsername);
-
-	// Si es correcto, guardar tambi�n los datos del usuario (nombre y puntos del ranking)
 	
 	if (correctLogin) {
+		NT->SetNewCorrectUser(&client, loginUsername, 15);
+
 		MM->AddConnectedPlayer(&client, loginUsername, 15);
 	}
 }
@@ -190,6 +195,11 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	data >> registerUsername;
 	data >> registerPassword;
 
+	if (NT->CheckIfNewUserExists(&client, registerUsername)) {
+		SendRegisterResponse(client, false, registerUsername);
+		return;
+	}
+
 	std::string passwordHash = bcrypt::generateHash(registerPassword);
 	
 	bool correctRegister = DB->RegisterUser(registerUsername, passwordHash);
@@ -197,6 +207,8 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	SendRegisterResponse(client, correctRegister, registerUsername);
 
 	if (correctRegister) {
+		NT->SetNewCorrectUser(&client, registerUsername, 15);
+
 		MM->AddConnectedPlayer(&client, registerUsername, 15);
 	}
 }
