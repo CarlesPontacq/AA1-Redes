@@ -46,6 +46,5 @@ private:
 
 	void EstablishConnectionWithServer();
 	void HandleReceivedPackets();
-	void SendServerPacket();
 };
 

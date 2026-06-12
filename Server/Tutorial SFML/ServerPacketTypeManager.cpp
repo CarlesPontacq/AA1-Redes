@@ -169,20 +169,20 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data, sf::TcpSocket
 	data >> loginUsername;
 	data >> loginPassword;
 
-	if(NT->CheckIfNewUserExists(&client, loginUsername)) {
-		SendLoginResponse(client, false, loginUsername);
-		return;
-	}
-
 	int userId = 0;
 
 	bool correctLogin = DB->LoginUser(loginUsername, loginPassword, userId);
 
+	bool userAlreadyConnected = false;
+
+	if(correctLogin)
+		userAlreadyConnected = MM->CheckIfConnectedPlayerExists(&client, loginUsername, 15);
+
+	correctLogin = correctLogin && !userAlreadyConnected;
+
 	SendLoginResponse(client, correctLogin, loginUsername);
 	
 	if (correctLogin) {
-		NT->SetNewCorrectUser(&client, loginUsername, 15);
-
 		MM->AddConnectedPlayer(&client, loginUsername, 15);
 	}
 }
@@ -195,11 +195,6 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	data >> registerUsername;
 	data >> registerPassword;
 
-	if (NT->CheckIfNewUserExists(&client, registerUsername)) {
-		SendRegisterResponse(client, false, registerUsername);
-		return;
-	}
-
 	std::string passwordHash = bcrypt::generateHash(registerPassword);
 	
 	bool correctRegister = DB->RegisterUser(registerUsername, passwordHash);
@@ -207,8 +202,6 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data, sf::TcpSoc
 	SendRegisterResponse(client, correctRegister, registerUsername);
 
 	if (correctRegister) {
-		NT->SetNewCorrectUser(&client, registerUsername, 15);
-
 		MM->AddConnectedPlayer(&client, registerUsername, 15);
 	}
 }

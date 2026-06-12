@@ -34,9 +34,41 @@ GameRoom* MatchMakingManager::GetGameInfo(std::string roomId)
 	return nullptr;
 }
 
+
+
 void MatchMakingManager::AddConnectedPlayer(sf::TcpSocket* playerClient, std::string username, int playerPoints)
 {
 	connectedPlayers.push_back(Player(playerClient, username, playerPoints));
+}
+
+bool MatchMakingManager::CheckIfConnectedPlayerExists(sf::TcpSocket* playerClient, std::string username, int playerPoints)
+{
+	bool playerExists = false;
+
+	for (int i = 0; i < connectedPlayers.size(); i++)
+	{
+		if (username == connectedPlayers[i].name)
+		{
+			playerExists = true;
+			std::cout << "El jugador " << username << " ya ha iniciado sesion." << std::endl;
+			continue;
+		}
+	}
+
+	return playerExists;
+}
+
+void MatchMakingManager::RemoveConnectedPlayer(sf::TcpSocket* playerClient)
+{
+	for(int i = 0; i < connectedPlayers.size(); i++)
+	{
+		if (playerClient == connectedPlayers[i].client)
+		{
+			std::cout << "El jugador " << connectedPlayers[i].name << " se ha desconectado." << std::endl;
+			connectedPlayers.erase(connectedPlayers.begin() + i);
+			return;
+		}
+	}
 }
 
 bool MatchMakingManager::CreateWaitingRoom(std::string roomId, sf::TcpSocket* playerClient)
