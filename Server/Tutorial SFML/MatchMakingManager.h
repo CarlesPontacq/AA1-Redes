@@ -28,5 +28,7 @@ public:
 	bool CreateWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
 	bool JoinWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
 
+	void StartGame(std::string roomId);
+
 };
 

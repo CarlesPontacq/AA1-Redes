@@ -269,6 +269,11 @@ public:
 			}
 		}
 
+		if(playerCount >= MAX_PLAYERS)
+		{
+			LM->StartGame();
+		}
+
 		return Scene::update(window);
 	}
 };

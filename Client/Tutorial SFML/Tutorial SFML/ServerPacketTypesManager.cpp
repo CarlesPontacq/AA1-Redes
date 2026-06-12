@@ -139,6 +139,16 @@ void ServerPacketTypesManager::SendRankingPetition(int userId, sf::TcpSocket& se
 	SendData(server, packet);
 }
 
+void ServerPacketTypesManager::SendStartGamePetition(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::START_GAME;
+	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;

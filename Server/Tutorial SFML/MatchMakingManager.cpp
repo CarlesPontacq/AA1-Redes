@@ -34,8 +34,6 @@ GameRoom* MatchMakingManager::GetGameInfo(std::string roomId)
 	return nullptr;
 }
 
-
-
 void MatchMakingManager::AddConnectedPlayer(sf::TcpSocket* playerClient, std::string username, int playerPoints)
 {
 	connectedPlayers.push_back(Player(playerClient, username, playerPoints));
@@ -113,4 +111,10 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 		}
 	}
 	return false;
+}
+
+void MatchMakingManager::StartGame(std::string roomId)
+{
+	GameRoom* room = GetGameInfo(roomId);
+
 }

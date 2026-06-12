@@ -258,6 +258,11 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data, sf::TcpSock
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+	std::string lobbyID;
+
+	std::cout << "Recibida peticion para iniciar la partida de la sala: " << lobbyID << std::endl;
+
+	MM->StartGame(lobbyID);
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

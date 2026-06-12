@@ -1,6 +1,9 @@
 #pragma once
+#include <string>
 
 #define LM LobbyManager::Instance()
+
+#define MAX_PLAYERS 4
 
 class LobbyManager
 {
@@ -10,6 +13,7 @@ public:
 
 		return &lm;
 	}
+
 private:
 	bool roomJoined = false;
 	bool gameStarted = false;
@@ -22,10 +26,7 @@ public:
 		roomJoined = true;
 	}
 
-	void StartGame()
-	{
-		gameStarted = true;
-	}
+	void StartGame();
 
 	bool GetRoomJoined() { return roomJoined; }
 	bool GetGameStarted() { return gameStarted; }
