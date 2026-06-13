@@ -20,6 +20,8 @@ class LobbyWaitingScene : public Scene
 	sf::Text* roomCodeValue = nullptr;
 	sf::Text* playerCountValue = nullptr;
 
+	bool sendedStartGamePacket = false;
+
 public:
 	void enter(SharedMemory* _sharedMemory) override {
 		sharedMemory = _sharedMemory;
@@ -269,9 +271,11 @@ public:
 			}
 		}
 
-		if(playerCount >= MAX_PLAYERS)
+		if(playerCount >= MAX_PLAYERS && !sendedStartGamePacket)
 		{
-			LM->StartGame();
+			NT->SendStartGamePacket(id);
+			sendedStartGamePacket = true;
+			//LM->StartGame();
 		}
 
 		return Scene::update(window);

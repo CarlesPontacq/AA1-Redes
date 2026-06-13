@@ -112,9 +112,3 @@ bool MatchMakingManager::JoinWaitingRoom(std::string roomId, sf::TcpSocket* play
 	}
 	return false;
 }
-
-void MatchMakingManager::StartGame(std::string roomId)
-{
-	GameRoom* room = GetGameInfo(roomId);
-
-}

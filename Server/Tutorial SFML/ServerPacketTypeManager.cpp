@@ -18,6 +18,26 @@ sf::Packet& operator<<(sf::Packet& packet, PacketTypes& tipo) {
 	return packet;
 }
 
+sf::Packet& operator>>(sf::Packet& packet, Player& player) {
+	std::string ipRemoteAdrress;
+	packet >> ipRemoteAdrress;
+	std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(ipRemoteAdrress);
+
+	packet >> player.name;
+	packet >> player.points;
+
+	return packet;
+}
+
+sf::Packet& operator<<(sf::Packet& packet, Player& player) {
+	std::string ipRemoteAdrress = player.client->getRemoteAddress()->toString();
+	packet << ipRemoteAdrress;
+	packet << player.name;
+	packet << player.points;
+
+	return packet;
+}
+
 void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& client)
 {
 	PacketTypes packetType;
@@ -45,7 +65,7 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 		ReceiveRankingPacket(packet, client);
 		break;
 	case PacketTypes::START_GAME:
-		ReceiveStartGamePacket(packet);
+		ReceiveStartGamePacket(packet, client);
 		break;
 	case PacketTypes::END_GAME:
 		ReceiveEndGamePacket(packet);
@@ -153,6 +173,25 @@ void ServerPacketTypesManager::SendRankingPacket(sf::TcpSocket& client, std::vec
 	std::cout << "Ranking packet enviado con " << rankings.size() << " entradas." << std::endl;
 }
 
+void ServerPacketTypesManager::SendStartGamePacket(sf::TcpSocket& client, std::string lobbyId)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::START_GAME;
+
+	GameRoom* gameRoom = MM->GetGameInfo(lobbyId);
+
+	packet << gameRoom->GetPlayerAmount();
+
+	for (int i = 0; i < gameRoom->GetPlayerAmount(); i++)
+	{
+		Player player = *gameRoom->GetPlayer(i);
+		packet << player;
+	}
+
+	SendData(client, packet);
+}
+
 void ServerPacketTypesManager::ReceiveHandshakePacket(sf::Packet data)
 {
 	std::string receiveMesage;
@@ -256,13 +295,15 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data, sf::TcpSock
 	SendRankingPacket(client, topRankings);
 }
 
-void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
+void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data, sf::TcpSocket& client)
 {
 	std::string lobbyID;
 
+	data >> lobbyID;
+
 	std::cout << "Recibida peticion para iniciar la partida de la sala: " << lobbyID << std::endl;
 
-	MM->StartGame(lobbyID);
+	SendStartGamePacket(client, lobbyID);
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

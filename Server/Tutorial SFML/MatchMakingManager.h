@@ -19,7 +19,6 @@ private:
 
 	bool IsAvailableRoomId(std::string roomId);	
 	Player* GetPlayer(sf::TcpSocket* playerClient);
-	GameRoom* GetGameInfo(std::string roomId);
 
 public:
 	void AddConnectedPlayer(sf::TcpSocket* playerClient, std::string username, int playerPoints);
@@ -28,7 +27,6 @@ public:
 	bool CreateWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
 	bool JoinWaitingRoom(std::string roomId, sf::TcpSocket* playerClient);
 
-	void StartGame(std::string roomId);
-
+	GameRoom* GetGameInfo(std::string roomId);
 };
 

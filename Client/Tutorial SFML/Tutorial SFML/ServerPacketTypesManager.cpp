@@ -2,6 +2,7 @@
 #include "NetworkManager.h"
 #include "LobbyManager.h"
 #include "User.h"
+#include "SharedMemory.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -262,8 +263,48 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 	}
 }
 
+//sf::Packet& operator>>(sf::Packet& packet, Player& player) {
+//	std::string ipRemoteAdrress;
+//	packet >> ipRemoteAdrress;
+//	std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(ipRemoteAdrress);
+//
+//	packet >> player.name;
+//	packet >> player.points;
+//
+//	return packet;
+//}
+//
+//sf::Packet& operator<<(sf::Packet& packet, Player& player) {
+//	packet << player.client->getRemoteAddress()->toString();
+//	packet << player.name;
+//	packet << player.points;
+//
+//	return packet;
+//}
+
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+	int playerAmount;
+	data >> playerAmount;
+
+	SharedMemory* sharedMemory = new SharedMemory();
+
+	for(int i = 0; i < playerAmount; ++i) {
+		User user;
+
+		std::string playerIp;
+		data >> playerIp;
+
+		data >> user.nickname;
+		data >> user.score;
+
+		user.userIndex = i;
+		user.position = 0;
+
+		sharedMemory->saveString("userIp" + std::to_string(user.userIndex), playerIp);
+		sharedMemory->saveUser("user" + std::to_string(user.userIndex), user);
+	}
+
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

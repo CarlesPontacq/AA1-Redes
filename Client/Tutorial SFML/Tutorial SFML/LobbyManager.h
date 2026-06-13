@@ -26,7 +26,7 @@ public:
 		roomJoined = true;
 	}
 
-	void StartGame();
+	void StartGame() { gameStarted = true; }
 
 	bool GetRoomJoined() { return roomJoined; }
 	bool GetGameStarted() { return gameStarted; }
