@@ -279,9 +279,9 @@ public:
 			std::cout << "Actualizado el sharedMemory de Lobby Manager? " << sendedStartGamePacket << std::endl;
 		}
 
-		if (LM->GetActualizedSharedMemory()) {
+		if (LM->HasSharedMemoryBeenActualized()) {
+			sharedMemory->CopySharedMemoryData(LM->GetSharedMemory());
 			//LM->StartGame();
-
 		}
 
 		return Scene::update(window);

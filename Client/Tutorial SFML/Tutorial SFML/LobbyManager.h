@@ -21,7 +21,7 @@ private:
 	int playerCount = 1;
 	std::string roomId = "";
 
-	SharedMemory sharedMemory;
+	SharedMemory* sharedMemory;
 	bool actualizedSharedMemory = false;
 
 
@@ -40,17 +40,21 @@ public:
 
 	bool GetRoomJoined() { return roomJoined; }
 	bool GetGameStarted() { return gameStarted; }
-	bool GetActualizedSharedMemory() { return actualizedSharedMemory; }
+	bool HasSharedMemoryBeenActualized() { return actualizedSharedMemory; }
 	void UpdatePlayerCount(int newPlayerCount) { playerCount = newPlayerCount; }
 	int GetUpdatedPlayerCount() { return playerCount; }
 	void SetRoomId(std::string newRoomId) { roomId = newRoomId; }
 	std::string GetRoomId() { return roomId; }
 
 	void SaveSharedMemory(SharedMemory* _sharedMemory) {
-		sharedMemory.CopySharedMemoryData(_sharedMemory);
+		if (sharedMemory == nullptr)
+			sharedMemory = new SharedMemory();
+
+		sharedMemory->CopySharedMemoryData(_sharedMemory);
 		actualizedSharedMemory = true;
 	}
 
+	SharedMemory* GetSharedMemory() { return sharedMemory; }
 private:
 	LobbyManager() = default;
 	LobbyManager(const LobbyManager& lm) = delete;
