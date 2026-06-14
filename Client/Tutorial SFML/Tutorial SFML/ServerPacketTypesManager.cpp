@@ -263,25 +263,6 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 	}
 }
 
-//sf::Packet& operator>>(sf::Packet& packet, Player& player) {
-//	std::string ipRemoteAdrress;
-//	packet >> ipRemoteAdrress;
-//	std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(ipRemoteAdrress);
-//
-//	packet >> player.name;
-//	packet >> player.points;
-//
-//	return packet;
-//}
-//
-//sf::Packet& operator<<(sf::Packet& packet, Player& player) {
-//	packet << player.client->getRemoteAddress()->toString();
-//	packet << player.name;
-//	packet << player.points;
-//
-//	return packet;
-//}
-
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
 	int playerAmount;
@@ -305,6 +286,7 @@ void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 		sharedMemory->saveUser("user" + std::to_string(user.userIndex), user);
 	}
 
+	LM->SaveSharedMemory(sharedMemory);
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

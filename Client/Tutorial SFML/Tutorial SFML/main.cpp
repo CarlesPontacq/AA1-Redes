@@ -6,8 +6,6 @@ int main() {
 	
 	NT->Init();
 
-	std::cout << SERVER_IP.toString() << std::endl;
-
 	if (NT->GetDisconnectFromServer()) return 0;
 
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ WINDOW_WIDTH, WINDOW_HEIGHT }), WINDOW_NAME);

@@ -275,7 +275,13 @@ public:
 		{
 			NT->SendStartGamePacket(id);
 			sendedStartGamePacket = true;
+
+			std::cout << "Actualizado el sharedMemory de Lobby Manager? " << sendedStartGamePacket << std::endl;
+		}
+
+		if (LM->GetActualizedSharedMemory()) {
 			//LM->StartGame();
+
 		}
 
 		return Scene::update(window);

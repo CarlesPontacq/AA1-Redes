@@ -37,5 +37,19 @@ public:
 		result = savedUsers[key];
 		return true;
 	}
+
+	void CopySharedMemoryData(SharedMemory* memory) {
+		for (const auto& [key, value] : memory->savedStrings) {
+			if (savedStrings.find(key) == savedStrings.end()) {
+				savedStrings[key] = value;
+			}
+		}
+
+		for (const auto& [key, value] : memory->savedUsers) {
+			if (savedUsers.find(key) == savedUsers.end()) {
+				savedUsers[key] = value;
+			}
+		}
+	}
 };
 

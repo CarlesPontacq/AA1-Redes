@@ -44,6 +44,8 @@ void ServerPacketTypesManager::ReceivePacket(sf::Packet packet, sf::TcpSocket& c
 
 	packet >> packetType;
 
+	std::cout << client.getRemoteAddress()->toString() << std::endl;
+
 	switch (packetType)
 	{
 	case PacketTypes::HANDSHAKE:
