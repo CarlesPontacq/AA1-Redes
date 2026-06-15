@@ -23,6 +23,9 @@ sf::Packet& operator>>(sf::Packet& packet, Player& player) {
 	packet >> ipRemoteAdrress;
 	std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(ipRemoteAdrress);
 
+	unsigned short remotePort;
+	packet >> remotePort;
+
 	packet >> player.name;
 	packet >> player.points;
 
@@ -32,6 +35,7 @@ sf::Packet& operator>>(sf::Packet& packet, Player& player) {
 sf::Packet& operator<<(sf::Packet& packet, Player& player) {
 	std::string ipRemoteAdrress = player.client->getRemoteAddress()->toString();
 	packet << ipRemoteAdrress;
+	packet << player.client->getRemotePort();
 	packet << player.name;
 	packet << player.points;
 

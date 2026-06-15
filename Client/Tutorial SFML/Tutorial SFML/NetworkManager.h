@@ -22,9 +22,25 @@ private:
 	sf::TcpSocket socket;
 	bool successfulLogin = false;
 
+	sf::TcpListener listener;
+	std::vector<sf::TcpSocket*> otherClientsSockets;
+	sf::SocketSelector selector;
+
+	unsigned short localPort;
+	float timeoutTime = 5.0f;
+
+	struct ClientsConnectionInfo {
+		std::string username;
+		std::string ip;
+		unsigned short port;
+	};
+
+	std::vector<ClientsConnectionInfo> clientsInfo;
+
 public:
 	void Init();
 	void Update();
+	void StartP2P();
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
@@ -38,6 +54,8 @@ public:
 	void SendLobbyJoinAttemptPacket(std::string lobbyId);
 	void SendStartGamePacket(std::string lobbyId);
 	void SendRankingPetitionServerPacket(int userId);
+
+	void SaveClientsInfo(std::string ip, unsigned short port, std::string username);
 
 private:
 	NetworkManager() = default;

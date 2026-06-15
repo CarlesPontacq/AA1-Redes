@@ -276,12 +276,19 @@ void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 		std::string playerIp;
 		data >> playerIp;
 
+		unsigned short remotePort;
+		data >> remotePort;
+
+
 		data >> user.nickname;
 		data >> user.score;
+
+		std::cout << "Ip: " << playerIp << " y Port: " << remotePort << " del usuario " << user.nickname << std::endl;
 
 		user.userIndex = i;
 		user.position = 0;
 
+		NT->SaveClientsInfo(playerIp, remotePort, user.nickname);
 		sharedMemory->saveString("userIp" + std::to_string(user.userIndex), playerIp);
 		sharedMemory->saveUser("user" + std::to_string(user.userIndex), user);
 	}

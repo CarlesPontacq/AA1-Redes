@@ -14,6 +14,7 @@ void NetworkManager::EstablishConnectionWithServer()
     }
     else {
         socket.setBlocking(false);
+        localPort = socket.getLocalPort();
         SPTM->SendHandshake(socket);
         HandleReceivedPackets();
         std::cout << "Conectado al servidor" << std::endl;
@@ -24,6 +25,34 @@ void NetworkManager::Update()
 {
     if (!disconnectFromServer) {
         HandleReceivedPackets();
+    }
+}
+
+void NetworkManager::StartP2P()
+{
+    socket.disconnect();
+
+    if (listener.listen(localPort) != sf::Socket::Status::Done) {
+        std::cerr << "Error al iniciar el P2P" << std::endl;
+        return;
+    }
+
+    selector.add(listener);
+
+    for (const auto& other : clientsInfo) {
+        sf::TcpSocket* socket = new sf::TcpSocket();
+
+        std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(other.ip);
+        if (socket->connect(ipAddress.value(), other.port, sf::seconds(timeoutTime)) == sf::Socket::Status::Done) {
+            std::cout << "Conectado con el usuario: " << other.username << " (" << other.ip << ":" << other.port << ")" << std::endl;
+            otherClientsSockets.push_back(socket);
+            selector.add(*socket);
+        }
+        else {
+            std::cout << "No se ha podido conectar con el usuario: " << other.username << " ("
+                << other.ip << ":" << other.port << ")" << std::endl;
+            delete socket;
+        }
     }
 }
 
@@ -48,6 +77,16 @@ void NetworkManager::SendRegisterAttemptServerPacket(std::string username, std::
 void NetworkManager::SendRankingPetitionServerPacket(int userId)
 {
     SPTM->SendRankingPetition(userId, socket);
+}
+
+void NetworkManager::SaveClientsInfo(std::string ip, unsigned short port, std::string username)
+{
+    ClientsConnectionInfo info;
+    info.ip = ip;
+    info.port = port;
+    info.username = username;
+
+    clientsInfo.push_back(info);
 }
 
 void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)

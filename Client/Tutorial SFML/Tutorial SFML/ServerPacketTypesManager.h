@@ -4,6 +4,7 @@
 #include <string>
 #include "User.h"
 
+
 #define SPTM ServerPacketTypesManager::Instance()
 
 enum PacketTypes
