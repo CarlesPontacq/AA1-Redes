@@ -28,6 +28,7 @@ private:
 
 	unsigned short localPort;
 	float timeoutTime = 5.0f;
+	bool establishedP2PConnection;
 
 	struct ClientsConnectionInfo {
 		std::string username;
@@ -56,6 +57,7 @@ public:
 	void SendRankingPetitionServerPacket(int userId);
 
 	void SaveClientsInfo(std::string ip, unsigned short port, std::string username);
+	void HandleP2PConnections();
 
 private:
 	NetworkManager() = default;

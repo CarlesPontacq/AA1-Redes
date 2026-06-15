@@ -26,6 +26,10 @@ void NetworkManager::Update()
     if (!disconnectFromServer) {
         HandleReceivedPackets();
     }
+
+    if (establishedP2PConnection) {
+        HandleP2PConnections();
+    }
 }
 
 void NetworkManager::StartP2P()
@@ -53,7 +57,9 @@ void NetworkManager::StartP2P()
                 << other.ip << ":" << other.port << ")" << std::endl;
             delete socket;
         }
-    }
+    } 
+
+    establishedP2PConnection = true;
 }
 
 sf::TcpSocket* NetworkManager::GetServerSocket()
@@ -87,6 +93,33 @@ void NetworkManager::SaveClientsInfo(std::string ip, unsigned short port, std::s
     info.username = username;
 
     clientsInfo.push_back(info);
+}
+
+void NetworkManager::HandleP2PConnections()
+{
+    if (selector.isReady(listener)) {
+        int iterator = 0;
+
+        for (auto socket : otherClientsSockets) {
+            iterator++;
+            sf::Packet packet;
+            if (socket->receive(packet) == sf::Socket::Status::Done) {
+                SPTM->ReceiveP2PPacket(packet);
+            }
+            else {
+                selector.remove(*socket);
+
+                delete socket;
+                otherClientsSockets.erase(otherClientsSockets.begin() + iterator);
+                iterator--;
+
+                std::cout << "Jugador desconectado" << std::endl;
+            }
+        }
+    }
+    else {
+        std::cout << "Selector is not ready" << std::endl;
+    }
 }
 
 void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)

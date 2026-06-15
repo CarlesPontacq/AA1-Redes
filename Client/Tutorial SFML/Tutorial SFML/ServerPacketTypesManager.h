@@ -12,6 +12,11 @@ enum PacketTypes
 	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, WAITING_ROOM_PLAYERS, RANKING, START_GAME, END_GAME
 };
 
+enum P2PPacketTypes
+{
+	TURN_ACTION, GAME_OVER
+};
+
 class ServerPacketTypesManager
 {
 public:
@@ -27,6 +32,7 @@ private:
 	std::vector<User> ranking;
 
 public:
+	void ReceiveP2PPacket(sf::Packet packet);
 	void ReceivePacket(sf::Packet packet);
 	void SendHandshake(sf::TcpSocket& server);
 	void SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server);
@@ -45,6 +51,9 @@ private:
 	~ServerPacketTypesManager() = default;
 
 	void SendData(sf::TcpSocket& socket, sf::Packet& packet);
+
+	void ReceiveP2PTurnActionPacket(sf::Packet data);
+	void ReceiveP2PEndGamePacket(sf::Packet data);
 
 	void ReceiveLoginPacket(sf::Packet data);
 	void ReceiveRegisterPacket(sf::Packet data);

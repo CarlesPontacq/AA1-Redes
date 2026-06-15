@@ -281,7 +281,8 @@ public:
 
 		if (LM->HasSharedMemoryBeenActualized()) {
 			sharedMemory->CopySharedMemoryData(LM->GetSharedMemory());
-			//LM->StartGame();
+			NT->StartP2P();
+			LM->StartGame();
 		}
 
 		return Scene::update(window);
