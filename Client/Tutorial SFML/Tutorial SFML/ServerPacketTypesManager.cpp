@@ -114,6 +114,12 @@ void ServerPacketTypesManager::SendData(sf::TcpSocket& socket, sf::Packet& packe
 void ServerPacketTypesManager::ReceiveP2PTurnActionPacket(sf::Packet data)
 {
 	std::cout << "Recibido paquete de turno" << std::endl;
+
+	int column, row, currentPlayer;
+
+	data >> column, row, currentPlayer;
+
+
 }
 
 void ServerPacketTypesManager::ReceiveP2PEndGamePacket(sf::Packet data)
@@ -194,6 +200,20 @@ void ServerPacketTypesManager::SendStartGamePetition(std::string lobbyId, sf::Tc
 
 	packet << PacketTypes::START_GAME;
 	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendTurnPacket(Move move, int currentPlayer, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << P2PPacketTypes::TURN_ACTION;
+
+	packet << move.column;
+	packet << move.row;
+
+	packet << currentPlayer;
 
 	SendData(server, packet);
 }

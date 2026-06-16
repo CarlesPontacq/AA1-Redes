@@ -3,6 +3,8 @@
 #include "User.h"
 #include "Object.h"
 #include "Move.h"
+#include "NetworkManager.h"
+
 class PlayerManager : public Object
 {
 public:
@@ -13,11 +15,7 @@ public:
 
 public:
 	void nextPlayer(Move move) {
-		//TODO: Notify others of move and player change
-		//Pseudocode:
-		/*
-		* NT->sendMove(move, currentPlayer);
-		*/
+		NT->SendTurnMovePacket(move, currentPlayer);
 
 		players[currentPlayer].isCurrent = false;
 

@@ -2,6 +2,7 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <string>
+#include "Move.h"
 #include "ServerPacketTypesManager.h"
 
 #define NT NetworkManager::Instance()
@@ -58,6 +59,7 @@ public:
 
 	void SaveClientsInfo(std::string ip, unsigned short port, std::string username);
 	void HandleP2PConnections();
+	void SendTurnMovePacket(Move move, int currentPlayer);
 
 private:
 	NetworkManager() = default;

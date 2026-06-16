@@ -42,6 +42,8 @@ public:
 	void SendRankingPetition(int userId, sf::TcpSocket& server);
 	void SendStartGamePetition(std::string lobbyId, sf::TcpSocket& server);
 
+	void SendTurnPacket(Move move, int currentPlayer, sf::TcpSocket& server);
+
 	inline std::vector<User> GetRanking() { return ranking; }
 
 private:

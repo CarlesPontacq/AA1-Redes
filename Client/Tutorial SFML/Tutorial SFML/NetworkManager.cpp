@@ -122,6 +122,13 @@ void NetworkManager::HandleP2PConnections()
     }
 }
 
+void NetworkManager::SendTurnMovePacket(Move move, int currentPlayer)
+{
+    for (auto socket : otherClientsSockets) {
+        SPTM->SendTurnPacket(move, currentPlayer, *socket);
+    }
+}
+
 void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)
 {
     SPTM->SendLobbyCreateAttempt(lobbyId, socket);
