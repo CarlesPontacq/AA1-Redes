@@ -97,7 +97,7 @@ void NetworkManager::SaveClientsInfo(std::string ip, unsigned short port, std::s
 
 void NetworkManager::HandleP2PConnections()
 {
-    if (selector.isReady(listener)) {
+    if (!selector.isReady(listener)) {
         int iterator = 0;
 
         for (auto socket : otherClientsSockets) {

@@ -24,7 +24,12 @@ public:
 	}
 
 	void update() override {
-		// TODO: Receive info from other users
+		//-----IA----
+		while (NT->HasPendingMoves()) {
+			std::pair<Move, int> pending = NT->PopPendingMove();
+			ApplyMove(pending.first, pending.second);
+		}
+		//-----------
 	}
 
 	void render(sf::RenderWindow& window) override {
@@ -166,6 +171,27 @@ public:
 	}
 
 private:
+	//-----IA----
+	void ApplyMove(Move move, int playerIndex) {
+		if (move.row == -1) {
+			playerManager->AdvanceTurnLocally(playerIndex);
+			return;
+		}
+
+		if (!validCell(move.row, move.column))
+			return;
+
+		if (setCell(move.row, move.column, playerIndex)) {
+			if (checkWin(move.row, move.column)) {
+				playerManager->winners[playerIndex] = true;
+			}
+
+			playerManager->AdvanceTurnLocally(playerIndex);
+		}
+	}
+	//---------
+
+
 	inline bool validClickPos(int posX, int posY) {
 		return
 			WINDOW_WIDTH * boardAnchorX <= posX &&

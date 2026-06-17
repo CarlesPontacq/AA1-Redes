@@ -117,9 +117,11 @@ void ServerPacketTypesManager::ReceiveP2PTurnActionPacket(sf::Packet data)
 
 	int column, row, currentPlayer;
 
-	data >> column, row, currentPlayer;
+	data >> column >> row >> currentPlayer;
 
-
+	//-----IA----
+	NT->PushPendingMove(Move(row, column), currentPlayer);
+	//-----------
 }
 
 void ServerPacketTypesManager::ReceiveP2PEndGamePacket(sf::Packet data)
@@ -346,7 +348,6 @@ void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 
 		unsigned short remotePort;
 		data >> remotePort;
-
 
 		data >> user.nickname;
 		data >> user.score;

@@ -4,6 +4,7 @@
 #include <string>
 #include "Move.h"
 #include "ServerPacketTypesManager.h"
+#include <queue>
 
 #define NT NetworkManager::Instance()
 #define SERVER_PORT 55000
@@ -30,7 +31,9 @@ private:
 	unsigned short localPort;
 	float timeoutTime = 5.0f;
 	bool establishedP2PConnection;
-
+	//-----IA----
+	std::queue<std::pair<Move, int>> pendingMoves;
+	//-----------
 	struct ClientsConnectionInfo {
 		std::string username;
 		std::string ip;
@@ -60,6 +63,16 @@ public:
 	void SaveClientsInfo(std::string ip, unsigned short port, std::string username);
 	void HandleP2PConnections();
 	void SendTurnMovePacket(Move move, int currentPlayer);
+
+	//-----IA----
+	inline void PushPendingMove(Move move, int playerIndex) { pendingMoves.push({ move, playerIndex }); }
+	inline bool HasPendingMoves() const { return !pendingMoves.empty(); }
+	inline std::pair<Move, int> PopPendingMove() {
+		auto m = pendingMoves.front();
+		pendingMoves.pop();
+		return m;
+	}
+	//-----------
 
 private:
 	NetworkManager() = default;

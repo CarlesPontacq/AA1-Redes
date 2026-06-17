@@ -14,11 +14,10 @@ public:
 	std::vector<bool> winners;
 
 public:
-	void nextPlayer(Move move) {
-		NT->SendTurnMovePacket(move, currentPlayer);
+	void AdvanceTurnLocally(int playerIndex) {
+		players[playerIndex].isCurrent = false;
 
-		players[currentPlayer].isCurrent = false;
-
+		currentPlayer = playerIndex;
 		do {
 			currentPlayer++;
 			currentPlayer %= PLAYER_COUNT;
@@ -26,6 +25,14 @@ public:
 
 		players[currentPlayer].isCurrent = true;
 	}
+
+	//-----IA----
+	void nextPlayer(Move move) {
+		NT->SendTurnMovePacket(move, currentPlayer);
+
+		AdvanceTurnLocally(currentPlayer);
+	}
+	//-----------
 
 public:
 	PlayerManager() {}

@@ -187,11 +187,18 @@ void ServerPacketTypesManager::SendStartGamePacket(sf::TcpSocket& client, std::s
 
 	GameRoom* gameRoom = MM->GetGameInfo(lobbyId);
 
-	packet << gameRoom->GetPlayerAmount();
+	packet << gameRoom->GetPlayerAmount() - 1;
 
 	for (int i = 0; i < gameRoom->GetPlayerAmount(); i++)
 	{
 		Player player = *gameRoom->GetPlayer(i);
+
+		if (player.client->getRemoteAddress()->toString() == client.getRemoteAddress()->toString()
+			&& player.client->getRemotePort() == client.getRemotePort()) {
+			std::cout << "El jugador es el cliente" << std::endl;
+			continue;
+		}
+
 		packet << player;
 	}
 
