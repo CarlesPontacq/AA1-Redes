@@ -252,13 +252,9 @@ void ServerPacketTypesManager::ReceiveLobbyJoinPacket(sf::Packet data, sf::TcpSo
 
 void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data, sf::TcpSocket& client)
 {
-	int playerId;
+	std::cout << "Recibida peticion de ranking" << std::endl;
 
-	data >> playerId;
-
-	std::cout << "Recibida peticion de ranking para el jugador ID: " << playerId << std::endl;
-
-	std::vector<Database::RankingEntry> topRankings = DB->GetTop10Rankings(playerId);
+	std::vector<Database::RankingEntry> topRankings = DB->GetTop10Rankings();
 
 	SendRankingPacket(client, topRankings);
 }

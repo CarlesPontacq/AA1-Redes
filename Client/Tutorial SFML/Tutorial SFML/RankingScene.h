@@ -6,10 +6,15 @@
 #include "ObjectShape.h"
 #include "ObjectText.h"
 #include "ObjectCircle.h"
+#include "NetworkManager.h"
+
+#define RANKING_QUERY_TIME 1.0f
 
 class RankingScene : public Scene
 {
 	sf::Font* font = nullptr;
+	int rankingListLength = 0;
+	sf::Clock rankingClock;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
@@ -148,14 +153,6 @@ public:
 		objects.push_back(new ObjectText(subtitle));
 
 		// =========================
-		// RANKING LIST
-		// =========================
-		// TODO: Get users ordered by most points, up to rankingListLength amount
-		for (int index = 0; index < static_cast<int>(users.size()) && index < rankingListLength; ++index) {
-			objects.push_back(new Ranking(users[index], *font, index));
-		}
-
-		// =========================
 		// FOOTER
 		// =========================
 		sf::Text footer(*font, rankingFooterText);
@@ -169,5 +166,30 @@ public:
 				});
 		}
 		objects.push_back(new ObjectText(footer));
+
+		NT->SendRankingPetitionServerPacket();
+		rankingClock.restart();
+	}
+
+	bool update(sf::RenderWindow& window) override {
+		if (rankingClock.getElapsedTime().asSeconds() > RANKING_QUERY_TIME) {
+			rankingClock.restart();
+			NT->SendRankingPetitionServerPacket();
+		}
+
+		// =========================
+		// RANKING LIST
+		// =========================
+		for (int i = 0; i < rankingListLength; i++) {
+			delete objects.back();
+			objects.pop_back();
+		}
+
+		rankingListLength = SPTM->GetRanking().size();
+
+		for (int i = 0; i < rankingListLength; i++) 
+			objects.push_back(new Ranking(SPTM->GetRanking()[i], *font, i));
+
+		return Scene::update(window);
 	}
 };

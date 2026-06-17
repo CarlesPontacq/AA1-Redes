@@ -129,12 +129,11 @@ void ServerPacketTypesManager::SendLobbyJoinAttempt(std::string lobbyId, sf::Tcp
 	SendData(server, packet);
 }
 
-void ServerPacketTypesManager::SendRankingPetition(int userId, sf::TcpSocket& server)
+void ServerPacketTypesManager::SendRankingPetition(sf::TcpSocket& server)
 {
 	sf::Packet packet;
 
 	packet << PacketTypes::RANKING;
-	packet << userId;
 
 	SendData(server, packet);
 }
@@ -157,7 +156,7 @@ void ServerPacketTypesManager::ReceiveLoginPacket(sf::Packet data)
 	if (success) {
 		std::cout << "Login correcto! Bienvenido " << username << std::endl;
 		NT->SetSuccessfulLogin(true);
-		NT->SendRankingPetitionServerPacket(16);
+		NT->SendRankingPetitionServerPacket();
 	}
 	else {
 		std::cout << "Login incorrecto" << std::endl;
@@ -175,7 +174,7 @@ void ServerPacketTypesManager::ReceiveRegisterPacket(sf::Packet data)
 	if (success) {
 		std::cout << "Registro correcto! Usuario " << username << " creado" << std::endl;
 		NT->SetSuccessfulLogin(true);
-		NT->SendRankingPetitionServerPacket(16);
+		NT->SendRankingPetitionServerPacket();
 
 	}
 	else {
