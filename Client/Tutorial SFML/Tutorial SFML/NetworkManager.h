@@ -29,7 +29,7 @@ private:
 	sf::SocketSelector selector;
 
 	unsigned short localPort;
-	float timeoutTime = 5.0f;
+	float timeoutTime = 1.2f;
 	bool establishedP2PConnection;
 	//-----IA----
 	std::queue<std::pair<Move, int>> pendingMoves;

@@ -23,7 +23,7 @@ void NetworkManager::EstablishConnectionWithServer()
 
 void NetworkManager::Update()
 {
-    if (!disconnectFromServer) {
+    if (!disconnectFromServer && !establishedP2PConnection) {
         HandleReceivedPackets();
     }
 
@@ -58,6 +58,7 @@ void NetworkManager::StartP2P()
 
         if (socket->connect(ipAddress.value(), other.port, sf::seconds(timeoutTime)) == sf::Socket::Status::Done) {
             std::cout << "Conectado con el usuario: " << other.username << " (" << other.ip << ":" << other.port << ")" << std::endl;
+            socket->setBlocking(false);
             otherClientsSockets.push_back(socket);
             selector.add(*socket);
         }
@@ -113,6 +114,7 @@ void NetworkManager::HandleP2PConnections()
             iterator++;
             sf::Packet packet;
             if (socket->receive(packet) == sf::Socket::Status::Done) {
+                socket->setBlocking(false);
                 SPTM->ReceiveP2PPacket(packet);
             }
             else {
