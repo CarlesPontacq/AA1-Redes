@@ -43,10 +43,19 @@ void NetworkManager::StartP2P()
 
     selector.add(listener);
 
+    int mainPlayer = 0;
+
     for (const auto& other : clientsInfo) {
         sf::TcpSocket* socket = new sf::TcpSocket();
-
         std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(other.ip);
+        if (ipAddress && other.port == localPort) {
+            std::cout << "Ignorando conexion propia" << std::endl;
+            mainPlayerIndex = mainPlayer;
+            continue;
+        }
+
+        mainPlayer++;
+
         if (socket->connect(ipAddress.value(), other.port, sf::seconds(timeoutTime)) == sf::Socket::Status::Done) {
             std::cout << "Conectado con el usuario: " << other.username << " (" << other.ip << ":" << other.port << ")" << std::endl;
             otherClientsSockets.push_back(socket);

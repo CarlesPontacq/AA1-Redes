@@ -34,6 +34,9 @@ private:
 	//-----IA----
 	std::queue<std::pair<Move, int>> pendingMoves;
 	//-----------
+
+	int mainPlayerIndex;
+
 	struct ClientsConnectionInfo {
 		std::string username;
 		std::string ip;
@@ -51,6 +54,7 @@ public:
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
 	inline void SetSuccessfulLogin(bool successful) { successfulLogin = successful; }
 	inline bool GetSuccessfulLogin() { return successfulLogin; }
+	inline bool GetMainPlayerIndex() { return mainPlayerIndex; }
 
 	sf::TcpSocket* GetServerSocket();
 	void SendLoginAttemptServerPacket(std::string username, std::string password);

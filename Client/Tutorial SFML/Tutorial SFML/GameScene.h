@@ -24,16 +24,11 @@ public:
 
 		font = new sf::Font(FONT_PATH);
 
-		User mainUser;
-		sharedMemory->getUser("user", mainUser);
-
-		std::vector<User> otherUsers;
+		std::vector<User> users;
 		for (int i = 0; i < PLAYER_COUNT; ++i) {
-			if (i == mainUser.userIndex) continue;
-
 			User user;
 			sharedMemory->getUser("user" + std::to_string(i), user);
-			otherUsers.push_back(user);
+			users.push_back(user);
 		}
 
 		// =========================
@@ -177,7 +172,7 @@ public:
 		// =========================
 		// GAME OBJECTS
 		// =========================
-		PlayerManager* playerManager = new PlayerManager(mainUser, otherUsers, *font);
+		PlayerManager* playerManager = new PlayerManager(users[NT->GetMainPlayerIndex()], users, *font);
 		Board* board = new Board(playerManager);
 		CountdownTimer* countdown = new CountdownTimer(playerManager);
 
