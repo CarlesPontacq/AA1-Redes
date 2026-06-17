@@ -3,12 +3,19 @@
 #include <iostream>
 #include <string>
 #include "User.h"
+#include "Move.h"
+
 
 #define SPTM ServerPacketTypesManager::Instance()
 
 enum PacketTypes
 {
 	HANDSHAKE, LOGIN, REGISTER, LOBBY_CREATE, LOBBY_JOIN, WAITING_ROOM_PLAYERS, RANKING, START_GAME, END_GAME
+};
+
+enum P2PPacketTypes
+{
+	TURN_ACTION, GAME_OVER
 };
 
 class ServerPacketTypesManager
@@ -26,6 +33,7 @@ private:
 	std::vector<User> ranking;
 
 public:
+	void ReceiveP2PPacket(sf::Packet packet);
 	void ReceivePacket(sf::Packet packet);
 	void SendHandshake(sf::TcpSocket& server);
 	void SendLoginAttempt(std::string username, std::string password, sf::TcpSocket& server);
@@ -33,6 +41,9 @@ public:
 	void SendLobbyCreateAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendLobbyJoinAttempt(std::string lobbyId, sf::TcpSocket& server);
 	void SendRankingPetition(sf::TcpSocket& server);
+	void SendStartGamePetition(std::string lobbyId, sf::TcpSocket& server);
+
+	void SendTurnPacket(Move move, int currentPlayer, sf::TcpSocket& server);
 
 	inline std::vector<User> GetRanking() { return ranking; }
 
@@ -43,6 +54,9 @@ private:
 	~ServerPacketTypesManager() = default;
 
 	void SendData(sf::TcpSocket& socket, sf::Packet& packet);
+
+	void ReceiveP2PTurnActionPacket(sf::Packet data);
+	void ReceiveP2PEndGamePacket(sf::Packet data);
 
 	void ReceiveLoginPacket(sf::Packet data);
 	void ReceiveRegisterPacket(sf::Packet data);

@@ -2,7 +2,9 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <string>
+#include "Move.h"
 #include "ServerPacketTypesManager.h"
+#include <queue>
 
 #define NT NetworkManager::Instance()
 #define SERVER_PORT 55000
@@ -22,14 +24,36 @@ private:
 	sf::TcpSocket socket;
 	bool successfulLogin = false;
 
+	sf::TcpListener listener;
+	std::vector<sf::TcpSocket*> otherClientsSockets;
+	sf::SocketSelector selector;
+
+	unsigned short localPort;
+	bool establishedP2PConnection;
+	//-----IA----
+	std::queue<std::pair<Move, int>> pendingMoves;
+	//-----------
+
+	int mainPlayerIndex;
+
+	struct ClientsConnectionInfo {
+		std::string username;
+		std::string ip;
+		unsigned short port;
+	};
+
+	std::vector<ClientsConnectionInfo> clientsInfo;
+
 public:
 	void Init();
 	void Update();
+	void StartP2P();
 
 	inline void DisconnectFromServer() { disconnectFromServer = true; }
 	inline bool GetDisconnectFromServer() { return disconnectFromServer; }
 	inline void SetSuccessfulLogin(bool successful) { successfulLogin = successful; }
 	inline bool GetSuccessfulLogin() { return successfulLogin; }
+	inline bool GetMainPlayerIndex() { return mainPlayerIndex; }
 
 	sf::TcpSocket* GetServerSocket();
 	void SendLoginAttemptServerPacket(std::string username, std::string password);
@@ -37,6 +61,21 @@ public:
 	void SendLobbyCreateAttemptPacket(std::string lobbyId);
 	void SendLobbyJoinAttemptPacket(std::string lobbyId);
 	void SendRankingPetitionServerPacket();
+	void SendStartGamePacket(std::string lobbyId);
+
+	void SaveClientsInfo(std::string ip, unsigned short port, std::string username);
+	void HandleP2PConnections();
+	void SendTurnMovePacket(Move move, int currentPlayer);
+
+	//-----IA----
+	inline void PushPendingMove(Move move, int playerIndex) { pendingMoves.push({ move, playerIndex }); }
+	inline bool HasPendingMoves() const { return !pendingMoves.empty(); }
+	inline std::pair<Move, int> PopPendingMove() {
+		auto m = pendingMoves.front();
+		pendingMoves.pop();
+		return m;
+	}
+	//-----------
 
 private:
 	NetworkManager() = default;
@@ -46,6 +85,5 @@ private:
 
 	void EstablishConnectionWithServer();
 	void HandleReceivedPackets();
-	void SendServerPacket();
 };
 

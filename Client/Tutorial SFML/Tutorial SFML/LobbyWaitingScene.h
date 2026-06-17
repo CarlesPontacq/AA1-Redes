@@ -20,6 +20,8 @@ class LobbyWaitingScene : public Scene
 	sf::Text* roomCodeValue = nullptr;
 	sf::Text* playerCountValue = nullptr;
 
+	bool sendedStartGamePacket = false;
+
 public:
 	void enter(SharedMemory* _sharedMemory) override {
 		sharedMemory = _sharedMemory;
@@ -267,6 +269,20 @@ public:
 			if (roomCodeValue) {
 				roomCodeValue->setString(id);
 			}
+		}
+
+		if(playerCount >= MAX_PLAYERS && !sendedStartGamePacket)
+		{
+			NT->SendStartGamePacket(id);
+			sendedStartGamePacket = true;
+
+			std::cout << "Actualizado el sharedMemory de Lobby Manager? " << sendedStartGamePacket << std::endl;
+		}
+
+		if (LM->HasSharedMemoryBeenActualized()) {
+			sharedMemory->CopySharedMemoryData(LM->GetSharedMemory());
+			NT->StartP2P();
+			LM->StartGame();
 		}
 
 		return Scene::update(window);

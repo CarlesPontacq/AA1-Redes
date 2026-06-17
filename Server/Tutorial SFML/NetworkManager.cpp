@@ -1,4 +1,5 @@
 #include "NetworkManager.h"
+#include "MatchMakingManager.h"
 
 void NetworkManager::Init()
 {
@@ -33,9 +34,6 @@ void NetworkManager::EstablishConnectionWithClient()
 
             clients.push_back(newClient);
 
-			User newUser;
-			clientsMap.insert({ newClient, newUser });
-
             std::cout << "Nueva conexion establecida" << std::endl;
         }
     }
@@ -64,7 +62,8 @@ void NetworkManager::CheckForDisconnection()
                 sf::Packet packet;
 
                 if (clients[i]->receive(packet) == sf::Socket::Status::Disconnected) {
-					clientsMap.erase(clients[i]);
+
+					MM->RemoveConnectedPlayer(clients[i]);
 
                     selector.remove(*clients[i]);
 
@@ -77,28 +76,4 @@ void NetworkManager::CheckForDisconnection()
             }
         }
     }
-}
-
-void NetworkManager::SetNewCorrectUser(sf::TcpSocket* client, std::string username, int points)
-{
-    if (clientsMap.find(client) != clientsMap.end()) {
-		clientsMap[client].nickname = username;
-		clientsMap[client].score = points;
-        std::cout << "Cambiando el usuario " << clientsMap[client].nickname << " por : " << username << std::endl;
-    }
-}
-
-bool NetworkManager::CheckIfNewUserExists(sf::TcpSocket* client, std::string username)
-{
-	bool userExists = false;
-
-    for(auto& pair : clientsMap) {
-        if (pair.second.nickname == username) {
-	        std::cout << "Verificando si el usuario " << username << " es el siguiente usuario: " << clientsMap[client].nickname << std::endl;
-            userExists = true;
-            break;
-        }
-	}
-
-    return userExists;
 }

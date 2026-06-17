@@ -2,6 +2,7 @@
 #include "NetworkManager.h"
 #include "LobbyManager.h"
 #include "User.h"
+#include "SharedMemory.h"
 
 sf::Packet& operator>>(sf::Packet& packet, PacketTypes& tipo) {
 	int temp;
@@ -17,6 +18,44 @@ sf::Packet& operator<<(sf::Packet& packet, PacketTypes& tipo) {
 	packet << temp;
 
 	return packet;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, P2PPacketTypes& tipo) {
+	int temp;
+	packet >> temp;
+	tipo = static_cast<P2PPacketTypes>(temp);
+
+	return packet;
+}
+
+sf::Packet& operator<<(sf::Packet& packet, P2PPacketTypes& tipo) {
+	int temp;
+	temp = static_cast<int>(tipo);
+	packet << temp;
+
+	return packet;
+}
+
+void ServerPacketTypesManager::ReceiveP2PPacket(sf::Packet packet)
+{
+	P2PPacketTypes packetType;
+
+	packet >> packetType;
+
+	switch (packetType)
+	{
+	case P2PPacketTypes::TURN_ACTION:
+		ReceiveP2PTurnActionPacket(packet);
+		break;
+	case P2PPacketTypes::GAME_OVER:
+		ReceiveP2PEndGamePacket(packet);
+		break;
+	default:
+		std::cout << "No se ha identificado el tipo de paquete P2P" << std::endl;
+		break;
+	}
+
+	packet.clear();
 }
 
 void ServerPacketTypesManager::ReceivePacket(sf::Packet packet)
@@ -70,6 +109,24 @@ void ServerPacketTypesManager::SendData(sf::TcpSocket& socket, sf::Packet& packe
 	else {
 		std::cerr << "Error al enviar el paquete" << std::endl;
 	}
+}
+
+void ServerPacketTypesManager::ReceiveP2PTurnActionPacket(sf::Packet data)
+{
+	std::cout << "Recibido paquete de turno" << std::endl;
+
+	int column, row, currentPlayer;
+
+	data >> column >> row >> currentPlayer;
+
+	//-----IA----
+	NT->PushPendingMove(Move(row, column), currentPlayer);
+	//-----------
+}
+
+void ServerPacketTypesManager::ReceiveP2PEndGamePacket(sf::Packet data)
+{
+	std::cout << "Recibido paquete de fin de la partida" << std::endl;
 }
 
 void ServerPacketTypesManager::SendHandshake(sf::TcpSocket& server)
@@ -134,6 +191,30 @@ void ServerPacketTypesManager::SendRankingPetition(sf::TcpSocket& server)
 	sf::Packet packet;
 
 	packet << PacketTypes::RANKING;
+
+	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendStartGamePetition(std::string lobbyId, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << PacketTypes::START_GAME;
+	packet << lobbyId;
+
+	SendData(server, packet);
+}
+
+void ServerPacketTypesManager::SendTurnPacket(Move move, int currentPlayer, sf::TcpSocket& server)
+{
+	sf::Packet packet;
+
+	packet << P2PPacketTypes::TURN_ACTION;
+
+	packet << move.column;
+	packet << move.row;
+
+	packet << currentPlayer;
 
 	SendData(server, packet);
 }
@@ -253,6 +334,34 @@ void ServerPacketTypesManager::ReceiveRankingPacket(sf::Packet data)
 
 void ServerPacketTypesManager::ReceiveStartGamePacket(sf::Packet data)
 {
+	int playerAmount;
+	data >> playerAmount;
+
+	SharedMemory* sharedMemory = new SharedMemory();
+
+	for(int i = 0; i < playerAmount; ++i) {
+		User user;
+
+		std::string playerIp;
+		data >> playerIp;
+
+		unsigned short remotePort;
+		data >> remotePort;
+
+		data >> user.nickname;
+		data >> user.score;
+
+		std::cout << "Ip: " << playerIp << " y Port: " << remotePort << " del usuario " << user.nickname << std::endl;
+
+		user.userIndex = i;
+		user.position = 0;
+
+		NT->SaveClientsInfo(playerIp, remotePort, user.nickname);
+		sharedMemory->saveString("userIp" + std::to_string(user.userIndex), playerIp);
+		sharedMemory->saveUser("user" + std::to_string(user.userIndex), user);
+	}
+
+	LM->SaveSharedMemory(sharedMemory);
 }
 
 void ServerPacketTypesManager::ReceiveEndGamePacket(sf::Packet data)

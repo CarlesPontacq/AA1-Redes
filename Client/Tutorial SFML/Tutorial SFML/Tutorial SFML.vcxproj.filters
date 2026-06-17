@@ -78,6 +78,9 @@
     <ClCompile Include="RankingScene.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyManager.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerPacketTypesManager.h">

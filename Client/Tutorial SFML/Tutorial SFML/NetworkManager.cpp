@@ -14,6 +14,7 @@ void NetworkManager::EstablishConnectionWithServer()
     }
     else {
         socket.setBlocking(false);
+        localPort = socket.getLocalPort();
         SPTM->SendHandshake(socket);
         HandleReceivedPackets();
         std::cout << "Conectado al servidor" << std::endl;
@@ -22,10 +23,53 @@ void NetworkManager::EstablishConnectionWithServer()
 
 void NetworkManager::Update()
 {
-    if (!disconnectFromServer) {
+    if (!disconnectFromServer && !establishedP2PConnection) {
         HandleReceivedPackets();
-        //SendServerPacket();
     }
+
+    if (establishedP2PConnection) {
+        HandleP2PConnections();
+    }
+}
+
+void NetworkManager::StartP2P()
+{
+    socket.disconnect();
+
+    if (listener.listen(localPort) != sf::Socket::Status::Done) {
+        std::cerr << "Error al iniciar el P2P" << std::endl;
+        return;
+    }
+
+    selector.add(listener);
+
+    int mainPlayer = 0;
+
+    for (const auto& other : clientsInfo) {
+        sf::TcpSocket* socket = new sf::TcpSocket();
+        std::optional<sf::IpAddress> ipAddress = sf::IpAddress::resolve(other.ip);
+        if (ipAddress && other.port == localPort) {
+            std::cout << "Ignorando conexion propia" << std::endl;
+            mainPlayerIndex = mainPlayer;
+            continue;
+        }
+
+        mainPlayer++;
+
+        if (socket->connect(ipAddress.value(), other.port) == sf::Socket::Status::Done) {
+            std::cout << "Conectado con el usuario: " << other.username << " (" << other.ip << ":" << other.port << ")" << std::endl;
+            socket->setBlocking(false);
+            otherClientsSockets.push_back(socket);
+            selector.add(*socket);
+        }
+        else {
+            std::cout << "No se ha podido conectar con el usuario: " << other.username << " ("
+                << other.ip << ":" << other.port << ")" << std::endl;
+            delete socket;
+        }
+    } 
+
+    establishedP2PConnection = true;
 }
 
 sf::TcpSocket* NetworkManager::GetServerSocket()
@@ -51,6 +95,51 @@ void NetworkManager::SendRankingPetitionServerPacket()
     SPTM->SendRankingPetition(socket);
 }
 
+void NetworkManager::SaveClientsInfo(std::string ip, unsigned short port, std::string username)
+{
+    ClientsConnectionInfo info;
+    info.ip = ip;
+    info.port = port;
+    info.username = username;
+
+    clientsInfo.push_back(info);
+}
+
+void NetworkManager::HandleP2PConnections()
+{
+    if (!selector.isReady(listener)) {
+        int iterator = 0;
+
+        for (auto socket : otherClientsSockets) {
+            iterator++;
+            sf::Packet packet;
+            if (socket->receive(packet) == sf::Socket::Status::Done) {
+                socket->setBlocking(false);
+                SPTM->ReceiveP2PPacket(packet);
+            }
+            else {
+                selector.remove(*socket);
+
+                delete socket;
+                otherClientsSockets.erase(otherClientsSockets.begin() + iterator);
+                iterator--;
+
+                std::cout << "Jugador desconectado" << std::endl;
+            }
+        }
+    }
+    else {
+        std::cout << "Selector is not ready" << std::endl;
+    }
+}
+
+void NetworkManager::SendTurnMovePacket(Move move, int currentPlayer)
+{
+    for (auto socket : otherClientsSockets) {
+        SPTM->SendTurnPacket(move, currentPlayer, *socket);
+    }
+}
+
 void NetworkManager::SendLobbyCreateAttemptPacket(std::string lobbyId)
 {
     SPTM->SendLobbyCreateAttempt(lobbyId, socket);
@@ -61,6 +150,11 @@ void NetworkManager::SendLobbyJoinAttemptPacket(std::string lobbyId)
     SPTM->SendLobbyJoinAttempt(lobbyId, socket);
 }
 
+void NetworkManager::SendStartGamePacket(std::string lobbyId)
+{
+	SPTM->SendStartGamePetition(lobbyId, socket);
+}
+
 void NetworkManager::HandleReceivedPackets()
 {
     sf::Packet receivePacket;
@@ -69,43 +163,6 @@ void NetworkManager::HandleReceivedPackets()
     }
     else if (socket.receive(receivePacket) == sf::Socket::Status::Disconnected) {
         std::cout << "Servidor desconectado" << std::endl;
-        disconnectFromServer = true;
-    }
-}
-
-void NetworkManager::SendServerPacket()
-{
-    std::cout << "\n=== MENU ===" << std::endl;
-    std::cout << "1. Login" << std::endl;
-    std::cout << "2. Register" << std::endl;
-    std::cout << "3. Salir" << std::endl;
-    std::cout << "Opcion: ";
-
-    int opcion;
-    std::cin >> opcion;
-
-    if (opcion == 1) {
-        // LOGIN
-        std::string username, password;
-        std::cout << "Usuario: ";
-        std::cin >> username;
-        std::cout << "Contrasenya: ";
-        std::cin >> password;
-
-        SPTM->SendLoginAttempt(username, password, socket);
-    }
-    else if (opcion == 2) {
-        // REGISTER
-        std::string username, password;
-        std::cout << "Nuevo usuario: ";
-        std::cin >> username;
-        std::cout << "Contrasenya : ";
-        std::cin >> password;
-
-        SPTM->SendRegisterAttempt(username, password, socket);
-    }
-    else if (opcion == 3) {
-        std::cout << "Desconectando..." << std::endl;
         disconnectFromServer = true;
     }
 }
