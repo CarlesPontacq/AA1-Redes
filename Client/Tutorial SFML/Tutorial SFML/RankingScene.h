@@ -8,10 +8,13 @@
 #include "ObjectCircle.h"
 #include "NetworkManager.h"
 
+#define RANKING_QUERY_TIME 1.0f
+
 class RankingScene : public Scene
 {
 	sf::Font* font = nullptr;
 	int rankingListLength = 0;
+	sf::Clock rankingClock;
 
 public:
 	void enter(SharedMemory* _sharedMemory) override {
@@ -165,9 +168,15 @@ public:
 		objects.push_back(new ObjectText(footer));
 
 		NT->SendRankingPetitionServerPacket();
+		rankingClock.restart();
 	}
 
 	bool update(sf::RenderWindow& window) override {
+		if (rankingClock.getElapsedTime().asSeconds() > RANKING_QUERY_TIME) {
+			rankingClock.restart();
+			NT->SendRankingPetitionServerPacket();
+		}
+
 		// =========================
 		// RANKING LIST
 		// =========================
