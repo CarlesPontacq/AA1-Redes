@@ -189,7 +189,7 @@ bool Database::LoginUser(const std::string& nickname, const std::string& passwor
     }
 }
 
-std::vector<Database::RankingEntry> Database::GetTop10Rankings(int userId)
+std::vector<Database::RankingEntry> Database::GetTop10Rankings()
 {
     std::vector<RankingEntry> top10;
 

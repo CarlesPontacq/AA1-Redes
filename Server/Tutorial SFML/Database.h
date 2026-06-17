@@ -41,7 +41,7 @@ public:
     bool RegisterUser(const std::string& nickname, const std::string& password);
     bool LoginUser(const std::string& nickname, const std::string& password, int& userId);
 
-    std::vector<RankingEntry> GetTop10Rankings(int userId);
+    std::vector<RankingEntry> GetTop10Rankings();
 
 private:
     sql::Driver* driver;

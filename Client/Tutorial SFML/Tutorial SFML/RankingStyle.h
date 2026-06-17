@@ -41,8 +41,6 @@ const sf::Color rankingFooterColor = sf::Color(120, 130, 150);
 // =========================
 // LIST
 // =========================
-const int rankingListLength = 10;
-
 const float rankingsWidth = WINDOW_WIDTH * 0.36f;
 const float rankingsHeight = WINDOW_HEIGHT * 0.07f;
 
