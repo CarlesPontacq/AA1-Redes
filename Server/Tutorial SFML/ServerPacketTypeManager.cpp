@@ -39,6 +39,7 @@ sf::Packet& operator<<(sf::Packet& packet, Player& player) {
 	packet << player.name;
 	packet << player.points;
 
+	std::cout << "Cliente: " << player.name << " con IP: " << ipRemoteAdrress << " y puerto: " << player.client->getRemotePort() << std::endl;
 	return packet;
 }
 

@@ -56,7 +56,7 @@ void NetworkManager::StartP2P()
 
         mainPlayer++;
 
-        if (socket->connect(ipAddress.value(), other.port, sf::seconds(timeoutTime)) == sf::Socket::Status::Done) {
+        if (socket->connect(ipAddress.value(), other.port) == sf::Socket::Status::Done) {
             std::cout << "Conectado con el usuario: " << other.username << " (" << other.ip << ":" << other.port << ")" << std::endl;
             socket->setBlocking(false);
             otherClientsSockets.push_back(socket);
